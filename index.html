@@ -333,9 +333,9 @@ const SK='opskrifter_v5', SHK='indkoeb_v3';
 
 // Food photos via images.unsplash.com direct CDN - works without API key
 const CAT_IMGS = {
-  gryderet: 'https://images.unsplash.com/photo-1547592166-23ac45744acd?w=800&q=80',
-  vafler:   'https://images.unsplash.com/photo-1562376552-0d160a2f238d?w=800&q=80',
-  bagning:  'https://images.unsplash.com/photo-1562376552-0d160a2f238d?w=800&q=80',
+  gryderet: 'https://images.unsplash.com/photo-1608877907149-a206d75ba011?w=800&q=80',
+  vafler:   'https://images.unsplash.com/photo-1551404973-761c83cd8339?w=800&q=80',
+  bagning:  'https://images.unsplash.com/photo-1551404973-761c83cd8339?w=800&q=80',
   pasta:    'https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=800&q=80',
   kage:     'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=800&q=80',
   suppe:    'https://images.unsplash.com/photo-1547592180-85f173990554?w=800&q=80',
@@ -459,7 +459,7 @@ function renderHome(){
     const imgSrc=imgUrl(r.cat||r.name, r.id);
     return`<div class="card" onclick="openRecipe('${r.id}')">
       <div class="card-img-wrap">
-        <img src="${imgSrc}" alt="${r.name}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\\"card-img-placeholder\\">${getEmoji(r.cat)}</div>'">
+        <img src="${imgSrc}" alt="${r.name}" loading="lazy" onerror="this.style.display='none'">
       </div>
       <div class="card-body">
         <div class="card-cat">${getCatLabel(r.cat)}</div>
@@ -508,7 +508,7 @@ function renderDetail(r){
 
   document.getElementById('detailContent').innerHTML=`
     <div class="detail-img-wrap">
-      <img src="${imgSrc}" alt="${r.name}" onerror="this.parentElement.innerHTML='<div class=\\"detail-img-placeholder\\">${getEmoji(r.cat)}</div>'">
+      <img src="${imgSrc}" alt="${r.name}" onerror="this.style.display='none'">
       <div class="detail-img-overlay"></div>
     </div>
     <div class="detail-body">
