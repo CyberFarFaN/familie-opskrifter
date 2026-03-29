@@ -4,134 +4,204 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Opskrifter">
-<meta name="theme-color" content="#1c1008">
+<meta name="theme-color" content="#faf8f5">
 <title>Familieopskrifter</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Nunito:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg:#1c1008; --surface:#2a1d0e; --surface2:#362412; --border:#4a3520;
-  --accent:#e8a045; --red:#c0392b; --text:#f0e6d3; --muted:#9a836a;
-  --dim:#6b5540; --white:#fff8f0;
-  --safe-top:env(safe-area-inset-top);
-  --safe-bottom:env(safe-area-inset-bottom);
+  --bg:#faf8f5; --surface:#ffffff; --surface2:#f3f0eb; --border:#e8e2d9;
+  --accent:#c0392b; --accent2:#e67e22; --text:#1a1208; --muted:#7a6e62;
+  --dim:#b0a89e; --shadow:0 2px 20px rgba(0,0,0,.08);
+  --safe-top:env(safe-area-inset-top); --safe-bottom:env(safe-area-inset-bottom);
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100dvh;overflow-x:hidden}
+body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100dvh;overflow-x:hidden}
 .screen{display:none;flex-direction:column;min-height:100dvh}
 .screen.active{display:flex}
-.hdr{background:var(--bg);padding:calc(14px + var(--safe-top)) 20px 14px;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
+
+/* HEADER */
+.hdr{background:var(--bg);padding:calc(12px + var(--safe-top)) 20px 12px;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;backdrop-filter:blur(10px)}
 .hdr-inner{display:flex;align-items:center;justify-content:space-between}
-.hdr-title{font-family:'Playfair Display',serif;font-size:20px;color:var(--accent)}
-.hdr-back{display:flex;align-items:center;gap:5px;background:none;border:none;color:var(--accent);font-family:'DM Sans',sans-serif;font-size:15px;cursor:pointer;padding:6px 0}
+.hdr-logo{font-family:'Lora',serif;font-size:22px;color:var(--text);letter-spacing:-.3px}
+.hdr-logo span{color:var(--accent)}
+.hdr-back{display:flex;align-items:center;gap:4px;background:none;border:none;color:var(--accent);font-family:'Nunito',sans-serif;font-size:15px;font-weight:600;cursor:pointer;padding:6px 0}
 .hdr-back svg{width:18px;height:18px}
-.hdr-btn{background:none;border:none;color:var(--accent);cursor:pointer;padding:6px;display:flex;align-items:center}
+.hdr-btn{background:none;border:none;color:var(--muted);cursor:pointer;padding:6px;display:flex;align-items:center;transition:color .2s}
+.hdr-btn:active{color:var(--accent)}
 .hdr-btn svg{width:22px;height:22px}
-.scroll{flex:1;overflow-y:auto;padding-bottom:calc(80px + var(--safe-bottom));-webkit-overflow-scrolling:touch}
-.hero{padding:24px 20px 18px;background:linear-gradient(180deg,var(--surface) 0%,var(--bg) 100%)}
-.hero-title{font-family:'Playfair Display',serif;font-size:28px;color:var(--white);margin-bottom:3px}
-.hero-sub{font-size:13px;color:var(--muted)}
-.search-wrap{padding:14px 20px 6px}
-.search-box{background:var(--surface);border:1px solid var(--border);border-radius:12px;display:flex;align-items:center;gap:10px;padding:11px 14px}
-.search-box svg{width:15px;height:15px;color:var(--dim);flex-shrink:0}
-.search-box input{background:none;border:none;outline:none;font-family:'DM Sans',sans-serif;font-size:15px;color:var(--text);flex:1}
+
+/* SCROLL */
+.scroll{flex:1;overflow-y:auto;padding-bottom:calc(72px + var(--safe-bottom));-webkit-overflow-scrolling:touch}
+
+/* HOME HERO */
+.home-hero{padding:28px 20px 20px;background:var(--bg)}
+.home-eyebrow{font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:6px}
+.home-title{font-family:'Lora',serif;font-size:32px;line-height:1.2;color:var(--text);margin-bottom:4px}
+.home-title em{font-style:italic;color:var(--muted)}
+.home-sub{font-size:13px;color:var(--muted)}
+
+/* SEARCH */
+.search-wrap{padding:0 20px 16px}
+.search-box{background:var(--surface);border:1.5px solid var(--border);border-radius:14px;display:flex;align-items:center;gap:10px;padding:12px 16px;box-shadow:var(--shadow)}
+.search-box svg{width:16px;height:16px;color:var(--dim);flex-shrink:0}
+.search-box input{background:none;border:none;outline:none;font-family:'Nunito',sans-serif;font-size:15px;color:var(--text);flex:1}
 .search-box input::placeholder{color:var(--dim)}
-.sec-label{font-size:11px;font-weight:500;letter-spacing:1.2px;text-transform:uppercase;color:var(--dim);padding:14px 20px 8px}
-.recipe-list{padding:0 20px;display:flex;flex-direction:column;gap:10px}
-.card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px;cursor:pointer;transition:all .2s}
-.card:active{transform:scale(.98);background:var(--surface2)}
-.card-title{font-family:'Playfair Display',serif;font-size:17px;color:var(--white);margin-bottom:4px}
-.card-desc{font-size:13px;color:var(--muted);line-height:1.5;margin-bottom:10px}
-.card-meta{display:flex;gap:10px}
-.pill{background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:3px 10px;font-size:11px;color:var(--muted);display:flex;align-items:center;gap:4px}
-.pill svg{width:10px;height:10px}
+
+/* RECIPE GRID */
+.sec-label{font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--dim);padding:4px 20px 12px}
+.recipe-grid{padding:0 20px;display:grid;grid-template-columns:1fr;gap:18px}
+@media(min-width:600px){.recipe-grid{grid-template-columns:1fr 1fr}}
+
+/* RECIPE CARD */
+.card{background:var(--surface);border-radius:18px;overflow:hidden;box-shadow:var(--shadow);cursor:pointer;transition:transform .2s,box-shadow .2s;border:1px solid var(--border)}
+.card:active{transform:scale(.98);box-shadow:0 1px 8px rgba(0,0,0,.06)}
+.card-img{width:100%;height:200px;object-fit:cover;display:block;background:var(--surface2)}
+.card-img-wrap{position:relative;overflow:hidden;height:200px;background:var(--surface2)}
+.card-img-wrap img{width:100%;height:100%;object-fit:cover;transition:transform .4s}
+.card:active .card-img-wrap img{transform:scale(1.03)}
+.card-img-placeholder{width:100%;height:200px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--surface2) 0%,var(--border) 100%);font-size:48px}
+.card-body{padding:16px}
+.card-cat{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent);margin-bottom:5px}
+.card-title{font-family:'Lora',serif;font-size:18px;line-height:1.3;color:var(--text);margin-bottom:6px}
+.card-desc{font-size:13px;color:var(--muted);line-height:1.5;margin-bottom:12px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.card-meta{display:flex;gap:14px}
+.meta-item{display:flex;align-items:center;gap:4px;font-size:12px;color:var(--dim);font-weight:600}
+.meta-item svg{width:12px;height:12px}
+
+/* EMPTY */
 .empty{text-align:center;padding:60px 20px;color:var(--dim)}
-.fab{position:fixed;bottom:calc(18px + var(--safe-bottom));right:20px;width:54px;height:54px;background:var(--accent);border:none;border-radius:27px;color:var(--bg);cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 18px rgba(232,160,69,.4);z-index:200}
+
+/* FAB */
+.fab{position:fixed;bottom:calc(16px + var(--safe-bottom));right:20px;width:52px;height:52px;background:var(--accent);border:none;border-radius:26px;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(192,57,43,.4);z-index:200;transition:transform .2s}
 .fab:active{transform:scale(.92)}
-.fab svg{width:24px;height:24px}
-.detail-hero{background:var(--surface);padding:20px;border-bottom:1px solid var(--border)}
-.detail-title{font-family:'Playfair Display',serif;font-size:24px;color:var(--white);margin-bottom:6px}
-.detail-desc{font-size:14px;color:var(--muted);line-height:1.6;margin-bottom:14px}
-.detail-meta{display:flex;gap:8px;flex-wrap:wrap}
-.portions-bar{background:var(--surface);border-bottom:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;gap:16px}
-.portions-label{font-size:13px;color:var(--muted);flex:1}
-.portions-ctrl{display:flex;align-items:center;gap:12px}
-.p-btn{width:30px;height:30px;border-radius:15px;background:var(--surface2);border:1px solid var(--border);color:var(--accent);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.fab svg{width:22px;height:22px}
+
+/* DETAIL */
+.detail-img-wrap{position:relative;height:280px;overflow:hidden;background:var(--surface2)}
+.detail-img-wrap img{width:100%;height:100%;object-fit:cover}
+.detail-img-placeholder{width:100%;height:280px;display:flex;align-items:center;justify-content:center;font-size:72px;background:linear-gradient(135deg,var(--surface2),var(--border))}
+.detail-img-overlay{position:absolute;bottom:0;left:0;right:0;height:120px;background:linear-gradient(transparent,rgba(250,248,245,.95))}
+.detail-body{padding:20px}
+.detail-cat{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent);margin-bottom:6px}
+.detail-title{font-family:'Lora',serif;font-size:26px;line-height:1.2;color:var(--text);margin-bottom:8px}
+.detail-desc{font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:16px}
+.detail-meta{display:flex;gap:12px;flex-wrap:wrap;padding-bottom:16px;border-bottom:1px solid var(--border)}
+.meta-pill{background:var(--surface2);border-radius:20px;padding:5px 12px;font-size:12px;font-weight:600;color:var(--muted);display:flex;align-items:center;gap:5px}
+.meta-pill svg{width:12px;height:12px}
+
+/* PORTIONS */
+.portions-bar{display:flex;align-items:center;gap:16px;padding:14px 20px;background:var(--surface);border-bottom:1px solid var(--border)}
+.portions-label{font-size:13px;color:var(--muted);font-weight:600;flex:1}
+.portions-ctrl{display:flex;align-items:center;gap:14px}
+.p-btn{width:32px;height:32px;border-radius:16px;background:var(--surface2);border:1.5px solid var(--border);color:var(--accent);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:600}
 .p-btn:active{background:var(--border)}
-.p-count{font-family:'Playfair Display',serif;font-size:20px;color:var(--accent);min-width:26px;text-align:center}
-.tabs{display:flex;border-bottom:1px solid var(--border);background:var(--bg);position:sticky;top:73px;z-index:50}
-.tab{flex:1;padding:13px 8px;background:none;border:none;border-bottom:2px solid transparent;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;color:var(--dim);cursor:pointer;transition:all .2s}
+.p-count{font-family:'Lora',serif;font-size:22px;color:var(--accent);min-width:28px;text-align:center}
+
+/* TABS */
+.tabs{display:flex;border-bottom:1.5px solid var(--border);background:var(--bg);position:sticky;top:62px;z-index:50}
+.tab{flex:1;padding:13px 8px;background:none;border:none;border-bottom:2.5px solid transparent;font-family:'Nunito',sans-serif;font-size:13px;font-weight:600;color:var(--dim);cursor:pointer;transition:all .2s;margin-bottom:-1.5px}
 .tab.active{color:var(--accent);border-bottom-color:var(--accent)}
-.tab-content{display:none;padding:18px}
+.tab-content{display:none;padding:20px}
 .tab-content.active{display:block}
-.ing-list{display:flex;flex-direction:column;gap:2px}
-.ing-item{display:flex;align-items:baseline;gap:12px;padding:11px 12px;border-radius:8px}
-.ing-item:nth-child(even){background:var(--surface)}
-.ing-amount{font-weight:500;color:var(--accent);min-width:70px;font-size:14px;flex-shrink:0}
+
+/* INGREDIENTS */
+.ing-section-title{font-family:'Lora',serif;font-size:16px;color:var(--text);margin-bottom:14px}
+.ing-list{display:flex;flex-direction:column}
+.ing-item{display:flex;align-items:baseline;gap:14px;padding:11px 0;border-bottom:1px solid var(--border)}
+.ing-item:last-child{border-bottom:none}
+.ing-amount{font-weight:700;color:var(--accent);min-width:72px;font-size:14px;flex-shrink:0}
 .ing-name{font-size:14px;color:var(--text);line-height:1.4}
-.step-list{display:flex;flex-direction:column;gap:14px}
-.step-item{display:flex;gap:12px}
-.step-num{width:26px;height:26px;border-radius:13px;background:var(--accent);color:var(--bg);font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
-.step-title{font-weight:500;font-size:14px;color:var(--white);margin-bottom:3px}
-.step-text{font-size:14px;color:var(--muted);line-height:1.6}
-.notes-box{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:10px;padding:14px}
-.notes-title{font-size:11px;font-weight:500;letter-spacing:1px;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
-.note-item{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:6px}
+
+/* STEPS */
+.step-list{display:flex;flex-direction:column;gap:20px}
+.step-item{display:flex;gap:14px}
+.step-num{width:28px;height:28px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.step-title{font-weight:700;font-size:14px;color:var(--text);margin-bottom:4px}
+.step-text{font-size:14px;color:var(--muted);line-height:1.7}
+
+/* NOTES */
+.notes-box{background:linear-gradient(135deg,#fdf3f2,#fef9f5);border:1px solid #f0d5d0;border-left:3px solid var(--accent);border-radius:12px;padding:16px}
+.notes-title{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+.note-item{font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:6px}
 .note-item:last-child{margin-bottom:0}
-.action-row{display:flex;gap:8px;padding:12px 20px;border-top:1px solid var(--border)}
-.act-btn{flex:1;padding:12px 8px;background:var(--surface);border:1px solid var(--border);border-radius:12px;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:all .2s}
-.act-btn:active{background:var(--surface2);color:var(--accent);border-color:var(--accent)}
-.act-btn svg{width:15px;height:15px}
-.act-btn.primary{background:var(--accent);border-color:var(--accent);color:var(--bg);font-weight:500}
-.act-btn.primary:active{opacity:.8}
-.shop-item{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);cursor:pointer}
+
+/* ACTIONS */
+.action-row{display:flex;gap:10px;padding:14px 20px;border-top:1px solid var(--border);background:var(--bg)}
+.act-btn{flex:1;padding:13px 8px;background:var(--surface);border:1.5px solid var(--border);border-radius:14px;color:var(--muted);font-family:'Nunito',sans-serif;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:all .2s}
+.act-btn:active{background:var(--surface2)}
+.act-btn svg{width:16px;height:16px}
+.act-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.act-btn.primary:active{opacity:.85}
+
+/* SHOP */
+.shop-hero{padding:24px 20px 16px;border-bottom:1px solid var(--border)}
+.shop-hero-title{font-family:'Lora',serif;font-size:24px;color:var(--text);margin-bottom:3px}
+.shop-hero-sub{font-size:13px;color:var(--muted)}
+.shop-list-wrap{padding:0 20px}
+.shop-date-label{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--dim);padding:16px 0 8px}
+.shop-item{display:flex;align-items:flex-start;gap:14px;padding:13px 0;border-bottom:1px solid var(--border);cursor:pointer}
 .shop-item:last-child{border-bottom:none}
-.shop-check{width:22px;height:22px;border-radius:11px;border:2px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .2s;margin-top:1px}
+.shop-check{width:24px;height:24px;border-radius:12px;border:2px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .2s;margin-top:1px}
 .shop-item.checked .shop-check{background:var(--accent);border-color:var(--accent)}
-.shop-item.checked .shop-check::after{content:'';width:5px;height:9px;border-right:2px solid var(--bg);border-bottom:2px solid var(--bg);transform:rotate(45deg) translateY(-1px)}
-.shop-name{font-size:14px;color:var(--text);transition:color .2s}
-.shop-amt{font-size:12px;color:var(--accent);margin-top:2px}
-.shop-src{font-size:11px;color:var(--dim);margin-top:1px}
-.shop-item.checked .shop-name{color:var(--dim);text-decoration:line-through}
-.shop-empty{text-align:center;padding:50px 20px;color:var(--dim)}
+.shop-item.checked .shop-check::after{content:'';width:5px;height:9px;border-right:2px solid #fff;border-bottom:2px solid #fff;transform:rotate(45deg) translateY(-1px)}
+.shop-name{font-size:15px;color:var(--text);font-weight:600;transition:color .2s}
+.shop-amt{font-size:13px;color:var(--accent);font-weight:600;margin-top:2px}
+.shop-src{font-size:12px;color:var(--dim);margin-top:1px}
+.shop-item.checked .shop-name{color:var(--dim);text-decoration:line-through;font-weight:400}
+.shop-empty{text-align:center;padding:60px 20px;color:var(--dim)}
+.shop-empty svg{width:48px;height:48px;opacity:.25;display:block;margin:0 auto 12px}
+
+/* EDIT */
 .form-sec{padding:18px 20px;border-bottom:1px solid var(--border)}
-.form-label{font-size:11px;font-weight:500;letter-spacing:1px;text-transform:uppercase;color:var(--dim);margin-bottom:7px}
-.form-input,.form-textarea{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:11px 13px;font-family:'DM Sans',sans-serif;font-size:15px;color:var(--text);outline:none;transition:border-color .2s}
+.form-label{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--dim);margin-bottom:8px}
+.form-input,.form-textarea{width:100%;background:var(--surface);border:1.5px solid var(--border);border-radius:12px;padding:12px 14px;font-family:'Nunito',sans-serif;font-size:15px;color:var(--text);outline:none;transition:border-color .2s}
 .form-input:focus,.form-textarea:focus{border-color:var(--accent)}
 .form-textarea{min-height:75px;resize:vertical}
-.ing-row{display:flex;gap:6px;align-items:center;margin-bottom:7px}
-.ing-row .form-input:nth-child(1){width:75px;flex:none}
-.ing-row .form-input:nth-child(2){width:65px;flex:none}
+.ing-row{display:flex;gap:6px;align-items:center;margin-bottom:8px}
+.ing-row .form-input:nth-child(1){width:78px;flex:none}
+.ing-row .form-input:nth-child(2){width:68px;flex:none}
 .ing-row .form-input:nth-child(3){flex:1}
-.step-row{display:flex;gap:6px;align-items:flex-start;margin-bottom:7px}
-.step-row-inner{flex:1;display:flex;flex-direction:column;gap:5px}
+.step-row{display:flex;gap:8px;align-items:flex-start;margin-bottom:8px}
+.step-row-inner{flex:1;display:flex;flex-direction:column;gap:6px}
 .step-row-inner .form-input{width:100%}
-.step-row .form-textarea{flex:1;min-height:55px}
-.rm-btn{width:28px;height:28px;border-radius:14px;background:var(--red);border:none;color:#fff;font-size:16px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-top:3px}
-.add-btn{background:none;border:1px dashed var(--border);border-radius:10px;padding:10px;width:100%;color:var(--dim);font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer}
-.add-btn:active{border-color:var(--accent);color:var(--accent)}
-.save-btn{margin:18px 20px;padding:15px;background:var(--accent);border:none;border-radius:14px;font-family:'DM Sans',sans-serif;font-size:16px;font-weight:500;color:var(--bg);cursor:pointer;width:calc(100% - 40px)}
-.save-btn:active{opacity:.8}
-.del-btn{margin:0 20px 20px;padding:13px;background:none;border:1px solid var(--red);border-radius:14px;font-family:'DM Sans',sans-serif;font-size:15px;color:var(--red);cursor:pointer;width:calc(100% - 40px)}
+.rm-btn{width:30px;height:30px;border-radius:15px;background:#fdf2f2;border:1.5px solid #f5c6c6;color:var(--accent);font-size:18px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-top:3px}
+.add-row-btn{background:none;border:1.5px dashed var(--border);border-radius:12px;padding:11px;width:100%;color:var(--dim);font-family:'Nunito',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s}
+.add-row-btn:active{border-color:var(--accent);color:var(--accent)}
+.save-btn{margin:18px 20px;padding:16px;background:var(--accent);border:none;border-radius:14px;font-family:'Nunito',sans-serif;font-size:16px;font-weight:700;color:#fff;cursor:pointer;width:calc(100% - 40px)}
+.save-btn:active{opacity:.85}
+.del-btn{margin:0 20px 20px;padding:14px;background:none;border:1.5px solid #f5c6c6;border-radius:14px;font-family:'Nunito',sans-serif;font-size:15px;font-weight:600;color:var(--accent);cursor:pointer;width:calc(100% - 40px)}
+
+/* BOTTOM NAV */
 .bot-nav{position:fixed;bottom:0;left:0;right:0;background:var(--bg);border-top:1px solid var(--border);display:flex;padding-bottom:var(--safe-bottom);z-index:100}
 .nav-item{flex:1;padding:10px 8px 12px;background:none;border:none;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;color:var(--dim);transition:color .2s}
 .nav-item.active{color:var(--accent)}
-.nav-item svg{width:21px;height:21px}
-.nav-item span{font-size:10px;font-weight:500}
-.toast{position:fixed;bottom:calc(88px + var(--safe-bottom));left:50%;transform:translateX(-50%) translateY(16px);background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:9px 16px;font-size:13px;color:var(--text);opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap;z-index:999}
+.nav-item svg{width:22px;height:22px}
+.nav-item span{font-size:10px;font-weight:700;letter-spacing:.5px}
+
+/* TOAST */
+.toast{position:fixed;bottom:calc(82px + var(--safe-bottom));left:50%;transform:translateX(-50%) translateY(16px);background:var(--text);border-radius:22px;padding:10px 18px;font-size:13px;font-weight:600;color:#fff;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap;z-index:999;box-shadow:0 4px 16px rgba(0,0,0,.2)}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* DIVIDER */
+.divider{height:1px;background:var(--border);margin:0 20px}
 </style>
 </head>
 <body>
 
 <!-- HOME -->
 <div id="homeScreen" class="screen active">
-  <div class="hdr"><div class="hdr-inner"><div class="hdr-title">Opskrifter</div></div></div>
+  <div class="hdr">
+    <div class="hdr-inner">
+      <div class="hdr-logo">Familie<span>opskrifter</span></div>
+    </div>
+  </div>
   <div class="scroll">
-    <div class="hero">
-      <div class="hero-title">Hvad skal der laves?</div>
-      <div class="hero-sub" id="recipeCount">Indlæser…</div>
+    <div class="home-hero">
+      <div class="home-eyebrow">Vores kogebog</div>
+      <div class="home-title">Hvad skal der<br><em>laves i dag?</em></div>
+      <div class="home-sub" id="recipeCount">Indlæser…</div>
     </div>
     <div class="search-wrap">
       <div class="search-box">
@@ -140,7 +210,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
       </div>
     </div>
     <div class="sec-label">Alle opskrifter</div>
-    <div class="recipe-list" id="recipeList"></div>
+    <div class="recipe-grid" id="recipeList"></div>
+    <div style="height:8px"></div>
   </div>
   <button class="fab" onclick="openNew()">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
@@ -162,7 +233,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
   <div class="hdr">
     <div class="hdr-inner">
       <button class="hdr-back" onclick="showScreen('home')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15,18 9,12 15,6"/></svg>Tilbage
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15,18 9,12 15,6"/></svg>Tilbage
       </button>
       <button class="hdr-btn" id="editBtn" onclick="openEdit(currentId)">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
@@ -177,13 +248,18 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 <div id="shopScreen" class="screen">
   <div class="hdr">
     <div class="hdr-inner">
-      <div class="hdr-title">Indkøbsliste</div>
+      <div class="hdr-logo">Indkøbs<span>liste</span></div>
       <button class="hdr-btn" onclick="clearChecked()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
       </button>
     </div>
   </div>
-  <div class="scroll" style="padding:18px 20px" id="shopList"></div>
+  <div class="scroll">
+    <div class="shop-hero">
+      <div class="shop-hero-sub" id="shopCount">Ingen varer endnu</div>
+    </div>
+    <div class="shop-list-wrap" id="shopList"></div>
+  </div>
   <nav class="bot-nav">
     <button class="nav-item" onclick="showScreen('home')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg>
@@ -201,9 +277,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
   <div class="hdr">
     <div class="hdr-inner">
       <button class="hdr-back" id="editBackBtn">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15,18 9,12 15,6"/></svg>Annuller
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15,18 9,12 15,6"/></svg>Annuller
       </button>
-      <div class="hdr-title" id="editTitle">Ny opskrift</div>
+      <div class="hdr-logo" id="editTitle">Ny <span>opskrift</span></div>
     </div>
   </div>
   <div class="scroll">
@@ -215,25 +291,29 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
       <div class="form-label">Beskrivelse</div>
       <textarea class="form-textarea" id="eDesc" placeholder="Kort beskrivelse…"></textarea>
     </div>
-    <div class="form-sec" style="display:flex;gap:16px">
+    <div class="form-sec" style="display:flex;gap:14px">
       <div style="flex:1">
         <div class="form-label">Portioner</div>
         <input type="number" class="form-input" id="ePortions" value="4" min="1" style="width:90px">
       </div>
       <div style="flex:2">
-        <div class="form-label">Tilberedningstid</div>
+        <div class="form-label">Tid</div>
         <input type="text" class="form-input" id="eTime" placeholder="f.eks. 30 min">
       </div>
     </div>
     <div class="form-sec">
+      <div class="form-label">Kategori (til billedsøgning)</div>
+      <input type="text" class="form-input" id="eCat" placeholder="f.eks. gryderet, vafler, pasta…">
+    </div>
+    <div class="form-sec">
       <div class="form-label">Ingredienser</div>
       <div id="ingList"></div>
-      <button class="add-btn" onclick="addIng()">+ Tilføj ingrediens</button>
+      <button class="add-row-btn" onclick="addIng()">+ Tilføj ingrediens</button>
     </div>
     <div class="form-sec">
       <div class="form-label">Fremgangsmåde</div>
       <div id="stepList"></div>
-      <button class="add-btn" onclick="addStep()">+ Tilføj trin</button>
+      <button class="add-row-btn" onclick="addStep()">+ Tilføj trin</button>
     </div>
     <div class="form-sec">
       <div class="form-label">Noter (valgfrit)</div>
@@ -248,14 +328,29 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 <div class="toast" id="toast"></div>
 
 <script>
-const SK='opskrifter_v4', SHK='indkoeb_v2';
+const SK='opskrifter_v5', SHK='indkoeb_v3';
+
+// Unsplash source - free, no API key needed
+function imgUrl(query, id) {
+  const seed = id || query;
+  const q = encodeURIComponent(query || 'food cooking');
+  return `https://source.unsplash.com/800x600/?${q}&sig=${seed}`;
+}
+
+const EMOJIS = {gryderet:'🍲',vafler:'🧇',pasta:'🍝',kage:'🎂',suppe:'🥣',salat:'🥗',fisk:'🐟',kylling:'🍗',pizza:'🍕'};
+function getEmoji(cat) {
+  if(!cat)return'🍽️';
+  const k=Object.keys(EMOJIS).find(k=>cat.toLowerCase().includes(k));
+  return k?EMOJIS[k]:'🍽️';
+}
+
 const DEFAULTS=[
-{id:'r1',name:'Skinkekødsgryde med bacon og pølser',desc:'En klassisk dansk gryderet med mørt skinkekød, sprød bacon og fyldige pølser — bedst når den får tid til at simre sig til perfektion.',portions:4,time:'min. 4 timer',
+{id:'r1',name:'Skinkekødsgryde med bacon og pølser',cat:'gryderet dansk',desc:'En klassisk dansk gryderet med mørt skinkekød, sprød bacon og fyldige pølser — bedst når den får tid til at simre sig til perfektion.',portions:4,time:'min. 4 timer',
 ingredients:[
   {amount:'300',unit:'g',name:'Skinkekød i tern (ca. 2×2 cm) — alternativt nakkefilet'},
   {amount:'250',unit:'g',name:'Bacon i tern'},
   {amount:'3',unit:'stk',name:'Store pølser, skåret i 1,5 cm skiver'},
-  {amount:'1',unit:'stk',name:'Stort løg (hvidt eller skalotteløg), grofthakket'},
+  {amount:'1',unit:'stk',name:'Stort løg, grofthakket'},
   {amount:'2',unit:'spsk',name:'Koncentreret tomatpuré'},
   {amount:'500',unit:'ml',name:'Vand'},
   {amount:'2',unit:'spsk',name:'Olivenolie'},
@@ -269,15 +364,15 @@ steps:[
   {title:'Brun pølserne',text:'På samme pande steges pølserne til gylden overfladeskorpe. Stil til side.'},
   {title:'Svits løg',text:'Varm olivenolie i en gryde ved middel varme. Svits løget 1–3 minutter til blødt og let gyldent.'},
   {title:'Brun skinkekødet',text:'Tilsæt skinkekødet og svits ved middel-høj varme til brunet på alle sider.'},
-  {title:'Svits tomatpuréen',text:'Rør tomatpuréen i og svits 1–2 minutter til den mørknes lidt og mister den rå smag.'},
-  {title:'Tilsæt vand og smag til',text:'Hæld 500 ml vand i. Tilsæt bouillon hvis ønsket. Smag til med salt og peber. Bring i kog.'},
-  {title:'Jævn og farv saucen',text:'Rør jævner ud i lidt koldt vand og tilsæt gradvist under omrøring. Tilsæt kulør for farve.'},
-  {title:'Tilsæt bacon og pølser',text:'Vend bacon og pølser i gryden. Rør forsigtigt rundt.'},
+  {title:'Svits tomatpuréen',text:'Rør tomatpuréen i og svits 1–2 minutter til den mørknes og mister den rå smag.'},
+  {title:'Tilsæt vand og smag til',text:'Hæld vand i, tilsæt bouillon, smag til med salt og peber. Bring i kog.'},
+  {title:'Jævn og farv',text:'Rør jævner ud i koldt vand og tilsæt gradvist. Tilsæt kulør for farve.'},
+  {title:'Tilsæt bacon og pølser',text:'Vend bacon og pølser i gryden.'},
   {title:'Simr i mindst 4 timer',text:'Sæt låget på og lad simre ved lav varme mindst 4 timer — gerne længere. Rør af og til.'},
   {title:'Servér',text:'Servér med ris til.'},
 ],
-notes:'Kødvalg: Nakkefilet giver mere smag — godt valg til lang simretid.\n\nTomatpuré: Svits grundigt af — rå tomatpuré giver sur smag.\n\nSimretid: 4 timer minimum. 6+ timer gør kødet markant mere mørt.'},
-{id:'r2',name:'Vafler — Mors opskrift (Hjerl Hede)',desc:'Sprøde, lette vafler efter mors gamle opskrift.',portions:4,time:'20 min',
+notes:'Kødvalg: Nakkefilet giver mere smag — godt valg til lang simretid.\n\nTomatpuré: Svits grundigt af — rå puré giver sur smag.\n\nSimretid: 4 timer minimum. 6+ timer gør kødet markant mere mørt.'},
+{id:'r2',name:'Vafler — Mors opskrift',cat:'vafler bagning',desc:'Sprøde, lette vafler efter mors gamle opskrift fra Hjerl Hede.',portions:4,time:'20 min',
 ingredients:[
   {amount:'250',unit:'ml',name:'Vand (2½ dl)'},
   {amount:'200',unit:'ml',name:'Mælk (2 dl)'},
@@ -290,11 +385,11 @@ steps:[
   {title:'Bland tørre ingredienser',text:'Bland mel, bagepulver og vanillesukker i en skål.'},
   {title:'Tilsæt væske',text:'Rør vand og mælk i lidt ad gangen til ensartet dej uden klumper.'},
   {title:'Tilsæt margarine',text:'Rør den smeltede margarine i dejen.'},
-  {title:'Bag vaflerne',text:'Varm vaffeljernet op og pensl med lidt margarine. Bag til gyldne og sprøde — ca. 3–4 minutter.'},
+  {title:'Bag vaflerne',text:'Varm vaffeljernet og pensl med margarine. Bag til gyldne og sprøde — ca. 3–4 min.'},
   {title:'Servér',text:'Servér straks med flødeskum og syltetøj.'},
 ],
 notes:'Mors originale opskrift fra Hjerl Hede. Margarine giver en let og sprød vaffel.\n\nFremgangsmåde er rekonstrueret — ret til hvis du kender den præcise metode.'},
-{id:'r3',name:'Vafler — Gærvafler (stor portion)',desc:'Luftige gærvafler med smør og æg. OBS: billedet var afskåret — tjek og ret ingredienser til.',portions:8,time:'ca. 1 time inkl. hævning',
+{id:'r3',name:'Gærvafler (stor portion)',cat:'vafler gær',desc:'Luftige gærvafler med smør og æg — stor portion til mange gæster.',portions:8,time:'ca. 1 time',
 ingredients:[
   {amount:'1/3',unit:'pk',name:'Gær'},
   {amount:'200',unit:'g',name:'Smør, smeltet'},
@@ -303,13 +398,13 @@ ingredients:[
   {amount:'500',unit:'g',name:'Mel'},
 ],
 steps:[
-  {title:'Opløs gæren',text:'Opløs gæren i lidt lunken mælk (ca. 37°C — ikke for varm).'},
-  {title:'Bland dejen',text:'Bland mel, æg, smeltet smør og resten af mælken. Rør gærblandingen i til ensartet dej.'},
+  {title:'Opløs gæren',text:'Opløs gæren i lidt lunken mælk (ca. 37°C).'},
+  {title:'Bland dejen',text:'Bland mel, æg, smeltet smør og resten af mælken. Rør gærblandingen i.'},
   {title:'Lad hæve',text:'Dæk til og lad hæve på lunt sted ca. 30–45 minutter.'},
-  {title:'Bag vaflerne',text:'Varm vaffeljernet op og pensl med smør. Bag til gyldne — ca. 3–5 minutter.'},
+  {title:'Bag vaflerne',text:'Pensl vaffeljernet med smør. Bag til gyldne — ca. 3–5 min.'},
   {title:'Servér',text:'Servér straks — gærvafler er bedst direkte fra jernet.'},
 ],
-notes:'OBS: Opskriften på billedet var afskåret — ret ingredienser til hvis du har den fulde opskrift.\n\nGærvafler er mere luftige end bagepulvervafler og har en let syrlig smag.'}
+notes:'OBS: Opskriften på billedet var afskåret — ret ingredienser til hvis du har den fulde opskrift.\n\nGærvafler er mere luftige og har en let syrlig smag.'}
 ];
 
 let recipes=[], shopItems=[], currentId=null, currentPortions=4, editingId=null;
@@ -336,21 +431,34 @@ function showScreen(name){
   window.scrollTo(0,0);
 }
 
+function getCatLabel(cat){
+  if(!cat)return'Opskrift';
+  return cat.split(' ')[0].charAt(0).toUpperCase()+cat.split(' ')[0].slice(1);
+}
+
 function renderHome(){
   const q=(document.getElementById('searchInput').value||'').toLowerCase();
   const filtered=recipes.filter(r=>r.name.toLowerCase().includes(q)||(r.desc||'').toLowerCase().includes(q));
-  document.getElementById('recipeCount').textContent=recipes.length===1?'1 opskrift':recipes.length+' opskrifter';
+  document.getElementById('recipeCount').textContent=recipes.length+' opskrifter gemt';
   const list=document.getElementById('recipeList');
-  if(!filtered.length){list.innerHTML='<div class="empty"><p>Ingen opskrifter fundet</p></div>';return;}
-  list.innerHTML=filtered.map(r=>`
-    <div class="card" onclick="openRecipe('${r.id}')">
-      <div class="card-title">${r.name}</div>
-      ${r.desc?`<div class="card-desc">${r.desc}</div>`:''}
-      <div class="card-meta">
-        <div class="pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>${r.portions} pers.</div>
-        ${r.time?`<div class="pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>${r.time}</div>`:''}
+  if(!filtered.length){list.innerHTML='<div class="empty" style="grid-column:1/-1"><p>Ingen opskrifter fundet</p></div>';return;}
+  list.innerHTML=filtered.map(r=>{
+    const imgSrc=imgUrl(r.cat||r.name, r.id);
+    return`<div class="card" onclick="openRecipe('${r.id}')">
+      <div class="card-img-wrap">
+        <img src="${imgSrc}" alt="${r.name}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\\"card-img-placeholder\\">${getEmoji(r.cat)}</div>'">
       </div>
-    </div>`).join('');
+      <div class="card-body">
+        <div class="card-cat">${getCatLabel(r.cat)}</div>
+        <div class="card-title">${r.name}</div>
+        ${r.desc?`<div class="card-desc">${r.desc}</div>`:''}
+        <div class="card-meta">
+          <div class="meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>${r.portions} pers.</div>
+          ${r.time?`<div class="meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>${r.time}</div>`:''}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
 }
 
 function openRecipe(id){
@@ -372,6 +480,7 @@ function scaleAmt(amount,ratio){
 
 function renderDetail(r){
   const ratio=currentPortions/r.portions;
+  const imgSrc=imgUrl(r.cat||r.name, r.id);
   const ings=r.ingredients.map(i=>`
     <div class="ing-item">
       <span class="ing-amount">${scaleAmt(i.amount,ratio)}${i.unit?' '+i.unit:''}</span>
@@ -385,16 +494,21 @@ function renderDetail(r){
   const notes=r.notes?`<div class="notes-box"><div class="notes-title">Noter & tips</div>${r.notes.split('\n\n').map(n=>`<div class="note-item">${n}</div>`).join('')}</div>`:'';
 
   document.getElementById('detailContent').innerHTML=`
-    <div class="detail-hero">
+    <div class="detail-img-wrap">
+      <img src="${imgSrc}" alt="${r.name}" onerror="this.parentElement.innerHTML='<div class=\\"detail-img-placeholder\\">${getEmoji(r.cat)}</div>'">
+      <div class="detail-img-overlay"></div>
+    </div>
+    <div class="detail-body">
+      <div class="detail-cat">${getCatLabel(r.cat)}</div>
       <div class="detail-title">${r.name}</div>
       ${r.desc?`<div class="detail-desc">${r.desc}</div>`:''}
       <div class="detail-meta">
-        <div class="pill">${r.portions} pers. (base)</div>
-        ${r.time?`<div class="pill">${r.time}</div>`:''}
+        <div class="meta-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>${r.portions} pers. (base)</div>
+        ${r.time?`<div class="meta-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>${r.time}</div>`:''}
       </div>
     </div>
     <div class="portions-bar">
-      <div class="portions-label">Portioner</div>
+      <div class="portions-label">Juster portioner</div>
       <div class="portions-ctrl">
         <button class="p-btn" onclick="changePortions(-1)">−</button>
         <div class="p-count" id="pCount">${currentPortions}</div>
@@ -406,7 +520,10 @@ function renderDetail(r){
       <button class="tab" onclick="switchTab('steps',this)">Fremgangsmåde</button>
       ${r.notes?'<button class="tab" onclick="switchTab(\'notes\',this)">Noter</button>':''}
     </div>
-    <div id="tab-ing" class="tab-content active"><div class="ing-list">${ings}</div></div>
+    <div id="tab-ing" class="tab-content active">
+      <div class="ing-section-title">Du skal bruge</div>
+      <div class="ing-list">${ings}</div>
+    </div>
     <div id="tab-steps" class="tab-content"><div class="step-list">${steps}</div></div>
     ${r.notes?`<div id="tab-notes" class="tab-content">${notes}</div>`:''}`;
 
@@ -428,7 +545,7 @@ function changePortions(d){
   document.getElementById('pCount').textContent=currentPortions;
   const ratio=currentPortions/r.portions;
   const el=document.getElementById('tab-ing');
-  if(el)el.innerHTML='<div class="ing-list">'+r.ingredients.map(i=>`
+  if(el)el.innerHTML='<div class="ing-section-title">Du skal bruge</div><div class="ing-list">'+r.ingredients.map(i=>`
     <div class="ing-item">
       <span class="ing-amount">${scaleAmt(i.amount,ratio)}${i.unit?' '+i.unit:''}</span>
       <span class="ing-name">${i.name}</span>
@@ -446,40 +563,52 @@ function printRecipe(id){
   const r=recipes.find(x=>x.id===id);
   if(!r)return;
   const ratio=currentPortions/r.portions;
+  const imgSrc=imgUrl(r.cat||r.name, r.id);
   const ings=r.ingredients.map(i=>`<tr>
-    <td style="color:#c0392b;font-weight:600;padding:7px 14px 7px 0;border-bottom:1px solid #eee;white-space:nowrap;vertical-align:top">${scaleAmt(i.amount,ratio)}${i.unit?' '+i.unit:''}</td>
-    <td style="padding:7px 0;border-bottom:1px solid #eee;font-size:14px">${i.name}</td>
+    <td style="color:#c0392b;font-weight:700;padding:8px 16px 8px 0;border-bottom:1px solid #eee;white-space:nowrap;font-size:14px">${scaleAmt(i.amount,ratio)}${i.unit?' '+i.unit:''}</td>
+    <td style="padding:8px 0;border-bottom:1px solid #eee;font-size:14px;color:#333">${i.name}</td>
   </tr>`).join('');
   const steps=r.steps.map((s,i)=>`
-    <div style="display:flex;gap:14px;margin-bottom:16px;align-items:flex-start">
-      <div style="min-width:26px;height:26px;border-radius:50%;background:#c0392b;color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">${i+1}</div>
-      <div><div style="font-weight:600;font-size:14px;margin-bottom:3px">${s.title}</div><div style="font-size:14px;color:#444;line-height:1.6">${s.text}</div></div>
+    <div style="display:flex;gap:14px;margin-bottom:18px;align-items:flex-start">
+      <div style="min-width:28px;height:28px;border-radius:50%;background:#c0392b;color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">${i+1}</div>
+      <div><div style="font-weight:700;font-size:14px;margin-bottom:4px;color:#1a1208">${s.title}</div><div style="font-size:14px;color:#555;line-height:1.7">${s.text}</div></div>
     </div>`).join('');
-  const notes=r.notes?`<div style="margin-top:24px;border-left:3px solid #c0392b;padding:12px 16px;background:#fdf8f5;border-radius:4px">
-    <div style="font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#c0392b;margin-bottom:8px">Noter & tips</div>
-    ${r.notes.split('\n\n').map(n=>`<p style="font-size:13px;color:#555;margin:0 0 6px">${n}</p>`).join('')}
+  const notes=r.notes?`<div style="margin-top:28px;border-left:3px solid #c0392b;padding:14px 18px;background:#fdf3f2;border-radius:6px">
+    <div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#c0392b;margin-bottom:10px">Noter & tips</div>
+    ${r.notes.split('\n\n').map(n=>`<p style="font-size:13px;color:#666;margin:0 0 6px;line-height:1.6">${n}</p>`).join('')}
   </div>`:'';
 
   const html=`<!DOCTYPE html><html lang="da"><head>
   <meta charset="UTF-8"><title>${r.name}</title>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
-    body{font-family:'DM Sans',sans-serif;max-width:680px;margin:0 auto;padding:32px 24px;color:#1a1a1a}
-    h1{font-family:'Playfair Display',serif;font-size:26px;margin:0 0 6px}
-    h2{font-family:'Playfair Display',serif;font-size:17px;color:#c0392b;margin:26px 0 12px;border-bottom:1px solid #eee;padding-bottom:6px}
+    body{font-family:'Nunito',sans-serif;max-width:700px;margin:0 auto;padding:0;color:#1a1208}
+    h1{font-family:'Lora',serif;font-size:28px;margin:0 0 6px;line-height:1.2}
+    h2{font-family:'Lora',serif;font-size:18px;color:#c0392b;margin:28px 0 14px;padding-bottom:6px;border-bottom:2px solid #f0e8e5}
+    .hero{position:relative;height:220px;overflow:hidden;margin-bottom:0}
+    .hero img{width:100%;height:100%;object-fit:cover}
+    .hero-overlay{position:absolute;bottom:0;left:0;right:0;height:80px;background:linear-gradient(transparent,rgba(250,248,245,1))}
+    .body{padding:20px 28px 32px}
+    .cat{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#c0392b;margin-bottom:6px}
+    .desc{color:#666;font-size:14px;line-height:1.6;margin-bottom:12px}
+    .meta{display:flex;gap:16px;font-size:13px;color:#999;font-weight:600;margin-bottom:4px}
     @media print{.no-print{display:none!important}}
   </style>
   </head><body>
-  <h1>${r.name}</h1>
-  ${r.desc?`<p style="color:#666;font-size:14px;margin:0 0 10px">${r.desc}</p>`:''}
-  <p style="font-size:13px;color:#999;margin:0 0 6px">👥 ${currentPortions} portioner${r.time?' &nbsp;·&nbsp; ⏱ '+r.time:''}</p>
-  <h2>Ingredienser</h2>
-  <table style="width:100%;border-collapse:collapse"><tbody>${ings}</tbody></table>
-  <h2>Fremgangsmåde</h2>${steps}${notes}
-  <div class="no-print" style="margin-top:28px">
-    <button onclick="window.print()" style="background:#c0392b;color:#fff;border:none;padding:11px 24px;border-radius:8px;font-size:14px;cursor:pointer;font-family:'DM Sans',sans-serif">
-      Udskriv / Gem som PDF
-    </button>
+  <div class="hero"><img src="${imgSrc}" alt="${r.name}" onerror="this.style.display='none'"><div class="hero-overlay"></div></div>
+  <div class="body">
+    <div class="cat">${getCatLabel(r.cat)}</div>
+    <h1>${r.name}</h1>
+    ${r.desc?`<div class="desc">${r.desc}</div>`:''}
+    <div class="meta"><span>👥 ${currentPortions} portioner</span>${r.time?`<span>⏱ ${r.time}</span>`:''}</div>
+    <h2>Ingredienser</h2>
+    <table style="width:100%;border-collapse:collapse"><tbody>${ings}</tbody></table>
+    <h2>Fremgangsmåde</h2>${steps}${notes}
+    <div class="no-print" style="margin-top:32px;padding-top:20px;border-top:1px solid #eee">
+      <button onclick="window.print()" style="background:#c0392b;color:#fff;border:none;padding:12px 26px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Nunito',sans-serif">
+        Udskriv / Gem som PDF
+      </button>
+    </div>
   </div>
   </body></html>`;
 
@@ -496,13 +625,23 @@ function addToShop(id){
     if(!i.name)return;
     shopItems.push({id:Date.now()+Math.random(),name:i.name,amount:i.amount?scaleAmt(i.amount,ratio)+(i.unit?' '+i.unit:''):'',source:r.name,checked:false});
   });
-  save();
-  showToast(r.ingredients.length+' ingredienser tilføjet');
+  save();showToast(r.ingredients.length+' ingredienser tilføjet');
 }
 
 function renderShop(){
   const el=document.getElementById('shopList');
-  if(!shopItems.length){el.innerHTML='<div class="shop-empty"><p style="font-size:15px;margin-bottom:6px">Ingen varer på listen</p><p style="font-size:13px">Åbn en opskrift og tryk "Til indkøb"</p></div>';return;}
+  const cnt=document.getElementById('shopCount');
+  if(!shopItems.length){
+    cnt.textContent='Ingen varer endnu';
+    el.innerHTML=`<div class="shop-empty">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+      <p style="font-size:15px;font-weight:600;margin-bottom:4px">Listen er tom</p>
+      <p style="font-size:13px">Åbn en opskrift og tryk "Til indkøb"</p>
+    </div>`;
+    return;
+  }
+  const remaining=shopItems.filter(x=>!x.checked).length;
+  cnt.textContent=remaining+' varer tilbage';
   el.innerHTML=shopItems.map(item=>`
     <div class="shop-item ${item.checked?'checked':''}" onclick="toggleShop('${item.id}')">
       <div class="shop-check"></div>
@@ -528,9 +667,9 @@ function clearChecked(){
 
 function openNew(){
   editingId=null;
-  document.getElementById('editTitle').textContent='Ny opskrift';
+  document.getElementById('editTitle').innerHTML='Ny <span>opskrift</span>';
   document.getElementById('editBackBtn').onclick=()=>showScreen('home');
-  ['eName','eDesc','eTime','eNotes'].forEach(id=>document.getElementById(id).value='');
+  ['eName','eDesc','eTime','eCat','eNotes'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('ePortions').value=4;
   document.getElementById('delBtn').style.display='none';
   document.getElementById('ingList').innerHTML='';
@@ -543,12 +682,13 @@ function openEdit(id){
   editingId=id;
   const r=recipes.find(x=>x.id===id);
   if(!r)return;
-  document.getElementById('editTitle').textContent='Rediger';
+  document.getElementById('editTitle').innerHTML='Rediger <span>opskrift</span>';
   document.getElementById('editBackBtn').onclick=()=>openRecipe(id);
   document.getElementById('eName').value=r.name;
   document.getElementById('eDesc').value=r.desc||'';
   document.getElementById('ePortions').value=r.portions;
   document.getElementById('eTime').value=r.time||'';
+  document.getElementById('eCat').value=r.cat||'';
   document.getElementById('eNotes').value=r.notes||'';
   document.getElementById('delBtn').style.display='block';
   document.getElementById('ingList').innerHTML='';
@@ -586,7 +726,15 @@ function saveRecipe(){
   const steps=[...document.querySelectorAll('#stepList .step-row')]
     .map(r=>({title:r.querySelector('.s-title').value.trim(),text:r.querySelector('.s-text').value.trim()}))
     .filter(s=>s.text);
-  const recipe={id:editingId||('r'+Date.now()),name,desc:document.getElementById('eDesc').value.trim(),portions:parseInt(document.getElementById('ePortions').value)||4,time:document.getElementById('eTime').value.trim(),notes:document.getElementById('eNotes').value.trim(),ingredients,steps};
+  const recipe={
+    id:editingId||('r'+Date.now()),name,
+    cat:document.getElementById('eCat').value.trim(),
+    desc:document.getElementById('eDesc').value.trim(),
+    portions:parseInt(document.getElementById('ePortions').value)||4,
+    time:document.getElementById('eTime').value.trim(),
+    notes:document.getElementById('eNotes').value.trim(),
+    ingredients,steps
+  };
   if(editingId){const i=recipes.findIndex(x=>x.id===editingId);if(i>=0)recipes[i]=recipe;}
   else recipes.push(recipe);
   save();showToast('Opskrift gemt');currentId=recipe.id;openRecipe(recipe.id);
