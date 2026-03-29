@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Opskrifter">
+<meta name="theme-color" content="#1c1008">
+<title>Familieopskrifter</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#1c1008; --surface:#2a1d0e; --surface2:#362412; --border:#4a3520;
+  --accent:#e8a045; --red:#c0392b; --text:#f0e6d3; --muted:#9a836a;
+  --dim:#6b5540; --white:#fff8f0;
+  --safe-top:env(safe-area-inset-top);
+  --safe-bottom:env(safe-area-inset-bottom);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100dvh;overflow-x:hidden}
+.screen{display:none;flex-direction:column;min-height:100dvh}
+.screen.active{display:flex}
+.hdr{background:var(--bg);padding:calc(14px + var(--safe-top)) 20px 14px;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
+.hdr-inner{display:flex;align-items:center;justify-content:space-between}
+.hdr-title{font-family:'Playfair Display',serif;font-size:20px;color:var(--accent)}
+.hdr-back{display:flex;align-items:center;gap:5px;background:none;border:none;color:var(--accent);font-family:'DM Sans',sans-serif;font-size:15px;cursor:pointer;padding:6px 0}
+.hdr-back svg{width:18px;height:18px}
+.hdr-btn{background:none;border:none;color:var(--accent);cursor:pointer;padding:6px;display:flex;align-items:center}
+.hdr-btn svg{width:22px;height:22px}
+.scroll{flex:1;overflow-y:auto;padding-bottom:calc(80px + var(--safe-bottom));-webkit-overflow-scrolling:touch}
+.hero{padding:24px 20px 18px;background:linear-gradient(180deg,var(--surface) 0%,var(--bg) 100%)}
+.hero-title{font-family:'Playfair Display',serif;font-size:28px;color:var(--white);margin-bottom:3px}
+.hero-sub{font-size:13px;color:var(--muted)}
+.search-wrap{padding:14px 20px 6px}
+.search-box{background:var(--surface);border:1px solid var(--border);border-radius:12px;display:flex;align-items:center;gap:10px;padding:11px 14px}
+.search-box svg{width:15px;height:15px;color:var(--dim);flex-shrink:0}
+.search-box input{background:none;border:none;outline:none;font-family:'DM Sans',sans-serif;font-size:15px;color:var(--text);flex:1}
+.search-box input::placeholder{color:var(--dim)}
+.sec-label{font-size:11px;font-weight:500;letter-spacing:1.2px;text-transform:uppercase;color:var(--dim);padding:14px 20px 8px}
+.recipe-list{padding:0 20px;display:flex;flex-direction:column;gap:10px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px;cursor:pointer;transition:all .2s}
+.card:active{transform:scale(.98);background:var(--surface2)}
+.card-title{font-family:'Playfair Display',serif;font-size:17px;color:var(--white);margin-bottom:4px}
+.card-desc{font-size:13px;color:var(--muted);line-height:1.5;margin-bottom:10px}
+.card-meta{display:flex;gap:10px}
+.pill{background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:3px 10px;font-size:11px;color:var(--muted);display:flex;align-items:center;gap:4px}
+.pill svg{width:10px;height:10px}
+.empty{text-align:center;padding:60px 20px;color:var(--dim)}
+.fab{position:fixed;bottom:calc(18px + var(--safe-bottom));right:20px;width:54px;height:54px;background:var(--accent);border:none;border-radius:27px;color:var(--bg);cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 18px rgba(232,160,69,.4);z-index:200}
+.fab:active{transform:scale(.92)}
+.fab svg{width:24px;height:24px}
+.detail-hero{background:var(--surface);padding:20px;border-bottom:1px solid var(--border)}
+.detail-title{font-family:'Playfair Display',serif;font-size:24px;color:var(--white);margin-bottom:6px}
+.detail-desc{font-size:14px;color:var(--muted);line-height:1.6;margin-bottom:14px}
+.detail-meta{display:flex;gap:8px;flex-wrap:wrap}
+.portions-bar{background:var(--surface);border-bottom:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;gap:16px}
+.portions-label{font-size:13px;color:var(--muted);flex:1}
+.portions-ctrl{display:flex;align-items:center;gap:12px}
+.p-btn{width:30px;height:30px;border-radius:15px;background:var(--surface2);border:1px solid var(--border);color:var(--accent);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.p-btn:active{background:var(--border)}
+.p-count{font-family:'Playfair Display',serif;font-size:20px;color:var(--accent);min-width:26px;text-align:center}
+.tabs{display:flex;border-bottom:1px solid var(--border);background:var(--bg);position:sticky;top:73px;z-index:50}
+.tab{flex:1;padding:13px 8px;background:none;border:none;border-bottom:2px solid transparent;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;color:var(--dim);cursor:pointer;transition:all .2s}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.tab-content{display:none;padding:18px}
+.tab-content.active{display:block}
+.ing-list{display:flex;flex-direction:column;gap:2px}
+.ing-item{display:flex;align-items:baseline;gap:12px;padding:11px 12px;border-radius:8px}
+.ing-item:nth-child(even){background:var(--surface)}
+.ing-amount{font-weight:500;color:var(--accent);min-width:70px;font-size:14px;flex-shrink:0}
+.ing-name{font-size:14px;color:var(--text);line-height:1.4}
+.step-list{display:flex;flex-direction:column;gap:14px}
+.step-item{display:flex;gap:12px}
+.step-num{width:26px;height:26px;border-radius:13px;background:var(--accent);color:var(--bg);font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.step-title{font-weight:500;font-size:14px;color:var(--white);margin-bottom:3px}
+.step-text{font-size:14px;color:var(--muted);line-height:1.6}
+.notes-box{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:10px;padding:14px}
+.notes-title{font-size:11px;font-weight:500;letter-spacing:1px;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
+.note-item{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:6px}
+.note-item:last-child{margin-bottom:0}
+.action-row{display:flex;gap:8px;padding:12px 20px;border-top:1px solid var(--border)}
+.act-btn{flex:1;padding:12px 8px;background:var(--surface);border:1px solid var(--border);border-radius:12px;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:all .2s}
+.act-btn:active{background:var(--surface2);color:var(--accent);border-color:var(--accent)}
+.act-btn svg{width:15px;height:15px}
+.act-btn.primary{background:var(--accent);border-color:var(--accent);color:var(--bg);font-weight:500}
+.act-btn.primary:active{opacity:.8}
+.shop-item{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);cursor:pointer}
+.shop-item:last-child{border-bottom:none}
+.shop-check{width:22px;height:22px;border-radius:11px;border:2px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .2s;margin-top:1px}
+.shop-item.checked .shop-check{background:var(--accent);border-color:var(--accent)}
+.shop-item.checked .shop-check::after{content:'';width:5px;height:9px;border-right:2px solid var(--bg);border-bottom:2px solid var(--bg);transform:rotate(45deg) translateY(-1px)}
+.shop-name{font-size:14px;color:var(--text);transition:color .2s}
+.shop-amt{font-size:12px;color:var(--accent);margin-top:2px}
+.shop-src{font-size:11px;color:var(--dim);margin-top:1px}
+.shop-item.checked .shop-name{color:var(--dim);text-decoration:line-through}
+.shop-empty{text-align:center;padding:50px 20px;color:var(--dim)}
+.form-sec{padding:18px 20px;border-bottom:1px solid var(--border)}
+.form-label{font-size:11px;font-weight:500;letter-spacing:1px;text-transform:uppercase;color:var(--dim);margin-bottom:7px}
+.form-input,.form-textarea{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:11px 13px;font-family:'DM Sans',sans-serif;font-size:15px;color:var(--text);outline:none;transition:border-color .2s}
+.form-input:focus,.form-textarea:focus{border-color:var(--accent)}
+.form-textarea{min-height:75px;resize:vertical}
+.ing-row{display:flex;gap:6px;align-items:center;margin-bottom:7px}
+.ing-row .form-input:nth-child(1){width:75px;flex:none}
+.ing-row .form-input:nth-child(2){width:65px;flex:none}
+.ing-row .form-input:nth-child(3){flex:1}
+.step-row{display:flex;gap:6px;align-items:flex-start;margin-bottom:7px}
+.step-row-inner{flex:1;display:flex;flex-direction:column;gap:5px}
+.step-row-inner .form-input{width:100%}
+.step-row .form-textarea{flex:1;min-height:55px}
+.rm-btn{width:28px;height:28px;border-radius:14px;background:var(--red);border:none;color:#fff;font-size:16px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-top:3px}
+.add-btn{background:none;border:1px dashed var(--border);border-radius:10px;padding:10px;width:100%;color:var(--dim);font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer}
+.add-btn:active{border-color:var(--accent);color:var(--accent)}
+.save-btn{margin:18px 20px;padding:15px;background:var(--accent);border:none;border-radius:14px;font-family:'DM Sans',sans-serif;font-size:16px;font-weight:500;color:var(--bg);cursor:pointer;width:calc(100% - 40px)}
+.save-btn:active{opacity:.8}
+.del-btn{margin:0 20px 20px;padding:13px;background:none;border:1px solid var(--red);border-radius:14px;font-family:'DM Sans',sans-serif;font-size:15px;color:var(--red);cursor:pointer;width:calc(100% - 40px)}
+.bot-nav{position:fixed;bottom:0;left:0;right:0;background:var(--bg);border-top:1px solid var(--border);display:flex;padding-bottom:var(--safe-bottom);z-index:100}
+.nav-item{flex:1;padding:10px 8px 12px;background:none;border:none;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;color:var(--dim);transition:color .2s}
+.nav-item.active{color:var(--accent)}
+.nav-item svg{width:21px;height:21px}
+.nav-item span{font-size:10px;font-weight:500}
+.toast{position:fixed;bottom:calc(88px + var(--safe-bottom));left:50%;transform:translateX(-50%) translateY(16px);background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:9px 16px;font-size:13px;color:var(--text);opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap;z-index:999}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<!-- HOME -->
+<div id="homeScreen" class="screen active">
+  <div class="hdr"><div class="hdr-inner"><div class="hdr-title">Opskrifter</div></div></div>
+  <div class="scroll">
+    <div class="hero">
+      <div class="hero-title">Hvad skal der laves?</div>
+      <div class="hero-sub" id="recipeCount">Indlæser…</div>
+    </div>
+    <div class="search-wrap">
+      <div class="search-box">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input type="search" id="searchInput" placeholder="Søg i opskrifter…" oninput="renderHome()">
+      </div>
+    </div>
+    <div class="sec-label">Alle opskrifter</div>
+    <div class="recipe-list" id="recipeList"></div>
+  </div>
+  <button class="fab" onclick="openNew()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+  </button>
+  <nav class="bot-nav">
+    <button class="nav-item active" onclick="showScreen('home')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg>
+      <span>Hjem</span>
+    </button>
+    <button class="nav-item" onclick="showScreen('shop')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+      <span>Indkøb</span>
+    </button>
+  </nav>
+</div>
+
+<!-- DETAIL -->
+<div id="detailScreen" class="screen">
+  <div class="hdr">
+    <div class="hdr-inner">
+      <button class="hdr-back" onclick="showScreen('home')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15,18 9,12 15,6"/></svg>Tilbage
+      </button>
+      <button class="hdr-btn" id="editBtn" onclick="openEdit(currentId)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="scroll" id="detailContent"></div>
+  <div class="action-row" id="detailActions"></div>
+</div>
+
+<!-- SHOP -->
+<div id="shopScreen" class="screen">
+  <div class="hdr">
+    <div class="hdr-inner">
+      <div class="hdr-title">Indkøbsliste</div>
+      <button class="hdr-btn" onclick="clearChecked()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="scroll" style="padding:18px 20px" id="shopList"></div>
+  <nav class="bot-nav">
+    <button class="nav-item" onclick="showScreen('home')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg>
+      <span>Hjem</span>
+    </button>
+    <button class="nav-item active" onclick="showScreen('shop')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+      <span>Indkøb</span>
+    </button>
+  </nav>
+</div>
+
+<!-- EDIT -->
+<div id="editScreen" class="screen">
+  <div class="hdr">
+    <div class="hdr-inner">
+      <button class="hdr-back" id="editBackBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15,18 9,12 15,6"/></svg>Annuller
+      </button>
+      <div class="hdr-title" id="editTitle">Ny opskrift</div>
+    </div>
+  </div>
+  <div class="scroll">
+    <div class="form-sec">
+      <div class="form-label">Navn</div>
+      <input type="text" class="form-input" id="eName" placeholder="Opskriftens navn">
+    </div>
+    <div class="form-sec">
+      <div class="form-label">Beskrivelse</div>
+      <textarea class="form-textarea" id="eDesc" placeholder="Kort beskrivelse…"></textarea>
+    </div>
+    <div class="form-sec" style="display:flex;gap:16px">
+      <div style="flex:1">
+        <div class="form-label">Portioner</div>
+        <input type="number" class="form-input" id="ePortions" value="4" min="1" style="width:90px">
+      </div>
+      <div style="flex:2">
+        <div class="form-label">Tilberedningstid</div>
+        <input type="text" class="form-input" id="eTime" placeholder="f.eks. 30 min">
+      </div>
+    </div>
+    <div class="form-sec">
+      <div class="form-label">Ingredienser</div>
+      <div id="ingList"></div>
+      <button class="add-btn" onclick="addIng()">+ Tilføj ingrediens</button>
+    </div>
+    <div class="form-sec">
+      <div class="form-label">Fremgangsmåde</div>
+      <div id="stepList"></div>
+      <button class="add-btn" onclick="addStep()">+ Tilføj trin</button>
+    </div>
+    <div class="form-sec">
+      <div class="form-label">Noter (valgfrit)</div>
+      <textarea class="form-textarea" id="eNotes" placeholder="Tips, varianter…" style="min-height:90px"></textarea>
+    </div>
+    <button class="save-btn" onclick="saveRecipe()">Gem opskrift</button>
+    <button class="del-btn" id="delBtn" style="display:none" onclick="deleteRecipe()">Slet opskrift</button>
+    <div style="height:20px"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const SK='opskrifter_v4', SHK='indkoeb_v2';
+const DEFAULTS=[
+{id:'r1',name:'Skinkekødsgryde med bacon og pølser',desc:'En klassisk dansk gryderet med mørt skinkekød, sprød bacon og fyldige pølser — bedst når den får tid til at simre sig til perfektion.',portions:4,time:'min. 4 timer',
+ingredients:[
+  {amount:'300',unit:'g',name:'Skinkekød i tern (ca. 2×2 cm) — alternativt nakkefilet'},
+  {amount:'250',unit:'g',name:'Bacon i tern'},
+  {amount:'3',unit:'stk',name:'Store pølser, skåret i 1,5 cm skiver'},
+  {amount:'1',unit:'stk',name:'Stort løg (hvidt eller skalotteløg), grofthakket'},
+  {amount:'2',unit:'spsk',name:'Koncentreret tomatpuré'},
+  {amount:'500',unit:'ml',name:'Vand'},
+  {amount:'2',unit:'spsk',name:'Olivenolie'},
+  {amount:'',unit:'',name:'Salt og peber (smag til)'},
+  {amount:'1',unit:'stk',name:'Bouillon (valgfrit)'},
+  {amount:'1',unit:'spsk',name:'Jævner (maizena eller brun sovs-jævner)'},
+  {amount:'1',unit:'tsk',name:'Kulør'},
+],
+steps:[
+  {title:'Steg bacon sprødt',text:'Steg bacon på en pande ved middel-høj varme til sprødt og gyldent. Stil til side på køkkenrulle.'},
+  {title:'Brun pølserne',text:'På samme pande steges pølserne til gylden overfladeskorpe. Stil til side.'},
+  {title:'Svits løg',text:'Varm olivenolie i en gryde ved middel varme. Svits løget 1–3 minutter til blødt og let gyldent.'},
+  {title:'Brun skinkekødet',text:'Tilsæt skinkekødet og svits ved middel-høj varme til brunet på alle sider.'},
+  {title:'Svits tomatpuréen',text:'Rør tomatpuréen i og svits 1–2 minutter til den mørknes lidt og mister den rå smag.'},
+  {title:'Tilsæt vand og smag til',text:'Hæld 500 ml vand i. Tilsæt bouillon hvis ønsket. Smag til med salt og peber. Bring i kog.'},
+  {title:'Jævn og farv saucen',text:'Rør jævner ud i lidt koldt vand og tilsæt gradvist under omrøring. Tilsæt kulør for farve.'},
+  {title:'Tilsæt bacon og pølser',text:'Vend bacon og pølser i gryden. Rør forsigtigt rundt.'},
+  {title:'Simr i mindst 4 timer',text:'Sæt låget på og lad simre ved lav varme mindst 4 timer — gerne længere. Rør af og til.'},
+  {title:'Servér',text:'Servér med ris til.'},
+],
+notes:'Kødvalg: Nakkefilet giver mere smag — godt valg til lang simretid.\n\nTomatpuré: Svits grundigt af — rå tomatpuré giver sur smag.\n\nSimretid: 4 timer minimum. 6+ timer gør kødet markant mere mørt.'},
+{id:'r2',name:'Vafler — Mors opskrift (Hjerl Hede)',desc:'Sprøde, lette vafler efter mors gamle opskrift.',portions:4,time:'20 min',
+ingredients:[
+  {amount:'250',unit:'ml',name:'Vand (2½ dl)'},
+  {amount:'200',unit:'ml',name:'Mælk (2 dl)'},
+  {amount:'250',unit:'g',name:'Mel'},
+  {amount:'2',unit:'tsk',name:'Bagepulver'},
+  {amount:'200',unit:'g',name:'Margarine, smeltet'},
+  {amount:'',unit:'',name:'Lidt vanillesukker'},
+],
+steps:[
+  {title:'Bland tørre ingredienser',text:'Bland mel, bagepulver og vanillesukker i en skål.'},
+  {title:'Tilsæt væske',text:'Rør vand og mælk i lidt ad gangen til ensartet dej uden klumper.'},
+  {title:'Tilsæt margarine',text:'Rør den smeltede margarine i dejen.'},
+  {title:'Bag vaflerne',text:'Varm vaffeljernet op og pensl med lidt margarine. Bag til gyldne og sprøde — ca. 3–4 minutter.'},
+  {title:'Servér',text:'Servér straks med flødeskum og syltetøj.'},
+],
+notes:'Mors originale opskrift fra Hjerl Hede. Margarine giver en let og sprød vaffel.\n\nFremgangsmåde er rekonstrueret — ret til hvis du kender den præcise metode.'},
+{id:'r3',name:'Vafler — Gærvafler (stor portion)',desc:'Luftige gærvafler med smør og æg. OBS: billedet var afskåret — tjek og ret ingredienser til.',portions:8,time:'ca. 1 time inkl. hævning',
+ingredients:[
+  {amount:'1/3',unit:'pk',name:'Gær'},
+  {amount:'200',unit:'g',name:'Smør, smeltet'},
+  {amount:'1500',unit:'ml',name:'Mælk (1½ l)'},
+  {amount:'4',unit:'stk',name:'Æg'},
+  {amount:'500',unit:'g',name:'Mel'},
+],
+steps:[
+  {title:'Opløs gæren',text:'Opløs gæren i lidt lunken mælk (ca. 37°C — ikke for varm).'},
+  {title:'Bland dejen',text:'Bland mel, æg, smeltet smør og resten af mælken. Rør gærblandingen i til ensartet dej.'},
+  {title:'Lad hæve',text:'Dæk til og lad hæve på lunt sted ca. 30–45 minutter.'},
+  {title:'Bag vaflerne',text:'Varm vaffeljernet op og pensl med smør. Bag til gyldne — ca. 3–5 minutter.'},
+  {title:'Servér',text:'Servér straks — gærvafler er bedst direkte fra jernet.'},
+],
+notes:'OBS: Opskriften på billedet var afskåret — ret ingredienser til hvis du har den fulde opskrift.\n\nGærvafler er mere luftige end bagepulvervafler og har en let syrlig smag.'}
+];
+
+let recipes=[], shopItems=[], currentId=null, currentPortions=4, editingId=null;
+
+function load(){
+  try{
+    const r=localStorage.getItem(SK);
+    recipes=r?JSON.parse(r):JSON.parse(JSON.stringify(DEFAULTS));
+    const s=localStorage.getItem(SHK);
+    shopItems=s?JSON.parse(s):[];
+  }catch(e){recipes=JSON.parse(JSON.stringify(DEFAULTS));shopItems=[];}
+}
+function save(){
+  localStorage.setItem(SK,JSON.stringify(recipes));
+  localStorage.setItem(SHK,JSON.stringify(shopItems));
+}
+
+function showScreen(name){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  const map={home:'homeScreen',detail:'detailScreen',shop:'shopScreen',edit:'editScreen'};
+  document.getElementById(map[name]).classList.add('active');
+  if(name==='home')renderHome();
+  if(name==='shop')renderShop();
+  window.scrollTo(0,0);
+}
+
+function renderHome(){
+  const q=(document.getElementById('searchInput').value||'').toLowerCase();
+  const filtered=recipes.filter(r=>r.name.toLowerCase().includes(q)||(r.desc||'').toLowerCase().includes(q));
+  document.getElementById('recipeCount').textContent=recipes.length===1?'1 opskrift':recipes.length+' opskrifter';
+  const list=document.getElementById('recipeList');
+  if(!filtered.length){list.innerHTML='<div class="empty"><p>Ingen opskrifter fundet</p></div>';return;}
+  list.innerHTML=filtered.map(r=>`
+    <div class="card" onclick="openRecipe('${r.id}')">
+      <div class="card-title">${r.name}</div>
+      ${r.desc?`<div class="card-desc">${r.desc}</div>`:''}
+      <div class="card-meta">
+        <div class="pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>${r.portions} pers.</div>
+        ${r.time?`<div class="pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>${r.time}</div>`:''}
+      </div>
+    </div>`).join('');
+}
+
+function openRecipe(id){
+  currentId=id;
+  const r=recipes.find(x=>x.id===id);
+  if(!r)return;
+  currentPortions=r.portions;
+  renderDetail(r);
+  showScreen('detail');
+}
+
+function scaleAmt(amount,ratio){
+  if(!amount)return'';
+  const n=parseFloat(amount);
+  if(isNaN(n))return amount;
+  const s=n*ratio;
+  return s%1===0?s.toString():s.toFixed(1).replace(/\.0$/,'');
+}
+
+function renderDetail(r){
+  const ratio=currentPortions/r.portions;
+  const ings=r.ingredients.map(i=>`
+    <div class="ing-item">
+      <span class="ing-amount">${scaleAmt(i.amount,ratio)}${i.unit?' '+i.unit:''}</span>
+      <span class="ing-name">${i.name}</span>
+    </div>`).join('');
+  const steps=r.steps.map((s,i)=>`
+    <div class="step-item">
+      <div class="step-num">${i+1}</div>
+      <div><div class="step-title">${s.title}</div><div class="step-text">${s.text}</div></div>
+    </div>`).join('');
+  const notes=r.notes?`<div class="notes-box"><div class="notes-title">Noter & tips</div>${r.notes.split('\n\n').map(n=>`<div class="note-item">${n}</div>`).join('')}</div>`:'';
+
+  document.getElementById('detailContent').innerHTML=`
+    <div class="detail-hero">
+      <div class="detail-title">${r.name}</div>
+      ${r.desc?`<div class="detail-desc">${r.desc}</div>`:''}
+      <div class="detail-meta">
+        <div class="pill">${r.portions} pers. (base)</div>
+        ${r.time?`<div class="pill">${r.time}</div>`:''}
+      </div>
+    </div>
+    <div class="portions-bar">
+      <div class="portions-label">Portioner</div>
+      <div class="portions-ctrl">
+        <button class="p-btn" onclick="changePortions(-1)">−</button>
+        <div class="p-count" id="pCount">${currentPortions}</div>
+        <button class="p-btn" onclick="changePortions(1)">+</button>
+      </div>
+    </div>
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('ing',this)">Ingredienser</button>
+      <button class="tab" onclick="switchTab('steps',this)">Fremgangsmåde</button>
+      ${r.notes?'<button class="tab" onclick="switchTab(\'notes\',this)">Noter</button>':''}
+    </div>
+    <div id="tab-ing" class="tab-content active"><div class="ing-list">${ings}</div></div>
+    <div id="tab-steps" class="tab-content"><div class="step-list">${steps}</div></div>
+    ${r.notes?`<div id="tab-notes" class="tab-content">${notes}</div>`:''}`;
+
+  document.getElementById('detailActions').innerHTML=`
+    <button class="act-btn" onclick="addToShop('${r.id}')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+      Til indkøb
+    </button>
+    <button class="act-btn primary" onclick="printRecipe('${r.id}')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+      Print / PDF
+    </button>`;
+}
+
+function changePortions(d){
+  const r=recipes.find(x=>x.id===currentId);
+  if(!r)return;
+  currentPortions=Math.max(1,currentPortions+d);
+  document.getElementById('pCount').textContent=currentPortions;
+  const ratio=currentPortions/r.portions;
+  const el=document.getElementById('tab-ing');
+  if(el)el.innerHTML='<div class="ing-list">'+r.ingredients.map(i=>`
+    <div class="ing-item">
+      <span class="ing-amount">${scaleAmt(i.amount,ratio)}${i.unit?' '+i.unit:''}</span>
+      <span class="ing-name">${i.name}</span>
+    </div>`).join('')+'</div>';
+}
+
+function switchTab(name,btn){
+  document.querySelectorAll('#detailContent .tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('#detailContent .tab-content').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tab-'+name).classList.add('active');
+}
+
+function printRecipe(id){
+  const r=recipes.find(x=>x.id===id);
+  if(!r)return;
+  const ratio=currentPortions/r.portions;
+  const ings=r.ingredients.map(i=>`<tr>
+    <td style="color:#c0392b;font-weight:600;padding:7px 14px 7px 0;border-bottom:1px solid #eee;white-space:nowrap;vertical-align:top">${scaleAmt(i.amount,ratio)}${i.unit?' '+i.unit:''}</td>
+    <td style="padding:7px 0;border-bottom:1px solid #eee;font-size:14px">${i.name}</td>
+  </tr>`).join('');
+  const steps=r.steps.map((s,i)=>`
+    <div style="display:flex;gap:14px;margin-bottom:16px;align-items:flex-start">
+      <div style="min-width:26px;height:26px;border-radius:50%;background:#c0392b;color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">${i+1}</div>
+      <div><div style="font-weight:600;font-size:14px;margin-bottom:3px">${s.title}</div><div style="font-size:14px;color:#444;line-height:1.6">${s.text}</div></div>
+    </div>`).join('');
+  const notes=r.notes?`<div style="margin-top:24px;border-left:3px solid #c0392b;padding:12px 16px;background:#fdf8f5;border-radius:4px">
+    <div style="font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#c0392b;margin-bottom:8px">Noter & tips</div>
+    ${r.notes.split('\n\n').map(n=>`<p style="font-size:13px;color:#555;margin:0 0 6px">${n}</p>`).join('')}
+  </div>`:'';
+
+  const html=`<!DOCTYPE html><html lang="da"><head>
+  <meta charset="UTF-8"><title>${r.name}</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    body{font-family:'DM Sans',sans-serif;max-width:680px;margin:0 auto;padding:32px 24px;color:#1a1a1a}
+    h1{font-family:'Playfair Display',serif;font-size:26px;margin:0 0 6px}
+    h2{font-family:'Playfair Display',serif;font-size:17px;color:#c0392b;margin:26px 0 12px;border-bottom:1px solid #eee;padding-bottom:6px}
+    @media print{.no-print{display:none!important}}
+  </style>
+  </head><body>
+  <h1>${r.name}</h1>
+  ${r.desc?`<p style="color:#666;font-size:14px;margin:0 0 10px">${r.desc}</p>`:''}
+  <p style="font-size:13px;color:#999;margin:0 0 6px">👥 ${currentPortions} portioner${r.time?' &nbsp;·&nbsp; ⏱ '+r.time:''}</p>
+  <h2>Ingredienser</h2>
+  <table style="width:100%;border-collapse:collapse"><tbody>${ings}</tbody></table>
+  <h2>Fremgangsmåde</h2>${steps}${notes}
+  <div class="no-print" style="margin-top:28px">
+    <button onclick="window.print()" style="background:#c0392b;color:#fff;border:none;padding:11px 24px;border-radius:8px;font-size:14px;cursor:pointer;font-family:'DM Sans',sans-serif">
+      Udskriv / Gem som PDF
+    </button>
+  </div>
+  </body></html>`;
+
+  const w=window.open('','_blank');
+  if(w){w.document.write(html);w.document.close();}
+  else showToast('Tillad popups for at printe');
+}
+
+function addToShop(id){
+  const r=recipes.find(x=>x.id===id);
+  if(!r)return;
+  const ratio=currentPortions/r.portions;
+  r.ingredients.forEach(i=>{
+    if(!i.name)return;
+    shopItems.push({id:Date.now()+Math.random(),name:i.name,amount:i.amount?scaleAmt(i.amount,ratio)+(i.unit?' '+i.unit:''):'',source:r.name,checked:false});
+  });
+  save();
+  showToast(r.ingredients.length+' ingredienser tilføjet');
+}
+
+function renderShop(){
+  const el=document.getElementById('shopList');
+  if(!shopItems.length){el.innerHTML='<div class="shop-empty"><p style="font-size:15px;margin-bottom:6px">Ingen varer på listen</p><p style="font-size:13px">Åbn en opskrift og tryk "Til indkøb"</p></div>';return;}
+  el.innerHTML=shopItems.map(item=>`
+    <div class="shop-item ${item.checked?'checked':''}" onclick="toggleShop('${item.id}')">
+      <div class="shop-check"></div>
+      <div>
+        <div class="shop-name">${item.name}</div>
+        ${item.amount?`<div class="shop-amt">${item.amount}</div>`:''}
+        <div class="shop-src">${item.source}</div>
+      </div>
+    </div>`).join('');
+}
+
+function toggleShop(id){
+  const item=shopItems.find(x=>String(x.id)===String(id));
+  if(item){item.checked=!item.checked;save();renderShop();}
+}
+
+function clearChecked(){
+  const b=shopItems.length;
+  shopItems=shopItems.filter(x=>!x.checked);
+  save();renderShop();
+  if(b!==shopItems.length)showToast('Afkrydsede varer fjernet');
+}
+
+function openNew(){
+  editingId=null;
+  document.getElementById('editTitle').textContent='Ny opskrift';
+  document.getElementById('editBackBtn').onclick=()=>showScreen('home');
+  ['eName','eDesc','eTime','eNotes'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('ePortions').value=4;
+  document.getElementById('delBtn').style.display='none';
+  document.getElementById('ingList').innerHTML='';
+  document.getElementById('stepList').innerHTML='';
+  addIng();addIng();addIng();addStep();addStep();
+  showScreen('edit');
+}
+
+function openEdit(id){
+  editingId=id;
+  const r=recipes.find(x=>x.id===id);
+  if(!r)return;
+  document.getElementById('editTitle').textContent='Rediger';
+  document.getElementById('editBackBtn').onclick=()=>openRecipe(id);
+  document.getElementById('eName').value=r.name;
+  document.getElementById('eDesc').value=r.desc||'';
+  document.getElementById('ePortions').value=r.portions;
+  document.getElementById('eTime').value=r.time||'';
+  document.getElementById('eNotes').value=r.notes||'';
+  document.getElementById('delBtn').style.display='block';
+  document.getElementById('ingList').innerHTML='';
+  document.getElementById('stepList').innerHTML='';
+  r.ingredients.forEach(i=>addIng(i.amount,i.unit,i.name));
+  r.steps.forEach(s=>addStep(s.title,s.text));
+  showScreen('edit');
+}
+
+function addIng(amount='',unit='',name=''){
+  const d=document.createElement('div');d.className='ing-row';
+  d.innerHTML=`<input type="text" class="form-input i-amt" placeholder="Mængde" value="${amount}" inputmode="decimal">
+    <input type="text" class="form-input i-unit" placeholder="Enhed" value="${unit}">
+    <input type="text" class="form-input i-name" placeholder="Ingrediens" value="${name}">
+    <button class="rm-btn" onclick="this.parentElement.remove()">×</button>`;
+  document.getElementById('ingList').appendChild(d);
+}
+
+function addStep(title='',text=''){
+  const d=document.createElement('div');d.className='step-row';
+  d.innerHTML=`<div class="step-row-inner">
+    <input type="text" class="form-input s-title" placeholder="Overskrift" value="${title}">
+    <textarea class="form-textarea s-text" placeholder="Beskriv trinnet…">${text}</textarea>
+  </div>
+  <button class="rm-btn" onclick="this.parentElement.remove()">×</button>`;
+  document.getElementById('stepList').appendChild(d);
+}
+
+function saveRecipe(){
+  const name=document.getElementById('eName').value.trim();
+  if(!name){showToast('Opskriften mangler et navn');return;}
+  const ingredients=[...document.querySelectorAll('#ingList .ing-row')]
+    .map(r=>({amount:r.querySelector('.i-amt').value.trim(),unit:r.querySelector('.i-unit').value.trim(),name:r.querySelector('.i-name').value.trim()}))
+    .filter(i=>i.name);
+  const steps=[...document.querySelectorAll('#stepList .step-row')]
+    .map(r=>({title:r.querySelector('.s-title').value.trim(),text:r.querySelector('.s-text').value.trim()}))
+    .filter(s=>s.text);
+  const recipe={id:editingId||('r'+Date.now()),name,desc:document.getElementById('eDesc').value.trim(),portions:parseInt(document.getElementById('ePortions').value)||4,time:document.getElementById('eTime').value.trim(),notes:document.getElementById('eNotes').value.trim(),ingredients,steps};
+  if(editingId){const i=recipes.findIndex(x=>x.id===editingId);if(i>=0)recipes[i]=recipe;}
+  else recipes.push(recipe);
+  save();showToast('Opskrift gemt');currentId=recipe.id;openRecipe(recipe.id);
+}
+
+function deleteRecipe(){
+  if(!confirm('Slet denne opskrift?'))return;
+  recipes=recipes.filter(x=>x.id!==editingId);
+  save();showToast('Opskrift slettet');showScreen('home');
+}
+
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2500);
+}
+
+load();renderHome();
+</script>
+</body>
+</html>
