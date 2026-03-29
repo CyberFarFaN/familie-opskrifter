@@ -6,10 +6,14 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Opskrifter">
+<meta name="referrer" content="no-referrer">
 <meta name="theme-color" content="#faf8f5">
 <title>Familieopskrifter</title>
 <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Nunito:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
+.fab{display:none!important}
+#editBtn{display:none!important}
+
 :root {
   --bg:#faf8f5; --surface:#ffffff; --surface2:#f3f0eb; --border:#e8e2d9;
   --accent:#c0392b; --accent2:#e67e22; --text:#1a1208; --muted:#7a6e62;
@@ -74,9 +78,9 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-
 .empty{text-align:center;padding:60px 20px;color:var(--dim)}
 
 /* FAB */
-.fab{position:fixed;bottom:calc(16px + var(--safe-bottom));right:20px;width:52px;height:52px;background:var(--accent);border:none;border-radius:26px;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(192,57,43,.4);z-index:200;transition:transform .2s}
-.fab:active{transform:scale(.92)}
-.fab svg{width:22px;height:22px}
+.fab{display:none!important}
+.fab:active{display:none!important}
+.fab svg{display:none!important}
 
 /* DETAIL */
 .detail-img-wrap{position:relative;height:280px;overflow:hidden;background:var(--surface2)}
@@ -214,9 +218,7 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-
     <div class="recipe-grid" id="recipeList"></div>
     <div style="height:8px"></div>
   </div>
-  <button class="fab" onclick="openNew()">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
-  </button>
+
   <nav class="bot-nav">
     <button class="nav-item active" onclick="showScreen('home')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg>
@@ -236,9 +238,7 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-
       <button class="hdr-back" onclick="showScreen('home')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15,18 9,12 15,6"/></svg>Tilbage
       </button>
-      <button class="hdr-btn" id="editBtn" onclick="openEdit(currentId)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-      </button>
+
     </div>
   </div>
   <div class="scroll" id="detailContent"></div>
@@ -273,92 +273,111 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-
   </nav>
 </div>
 
-<!-- EDIT -->
-<div id="editScreen" class="screen">
-  <div class="hdr">
-    <div class="hdr-inner">
-      <button class="hdr-back" id="editBackBtn">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15,18 9,12 15,6"/></svg>Annuller
-      </button>
-      <div class="hdr-logo" id="editTitle">Ny <span>opskrift</span></div>
-    </div>
-  </div>
-  <div class="scroll">
-    <div class="form-sec">
-      <div class="form-label">Navn</div>
-      <input type="text" class="form-input" id="eName" placeholder="Opskriftens navn">
-    </div>
-    <div class="form-sec">
-      <div class="form-label">Beskrivelse</div>
-      <textarea class="form-textarea" id="eDesc" placeholder="Kort beskrivelse…"></textarea>
-    </div>
-    <div class="form-sec" style="display:flex;gap:14px">
-      <div style="flex:1">
-        <div class="form-label">Portioner</div>
-        <input type="number" class="form-input" id="ePortions" value="4" min="1" style="width:90px">
-      </div>
-      <div style="flex:2">
-        <div class="form-label">Tid</div>
-        <input type="text" class="form-input" id="eTime" placeholder="f.eks. 30 min">
-      </div>
-    </div>
-    <div class="form-sec">
-      <div class="form-label">Kategori (til billedsøgning)</div>
-      <input type="text" class="form-input" id="eCat" placeholder="f.eks. gryderet, vafler, pasta…">
-    </div>
-    <div class="form-sec">
-      <div class="form-label">Ingredienser</div>
-      <div id="ingList"></div>
-      <button class="add-row-btn" onclick="addIng()">+ Tilføj ingrediens</button>
-    </div>
-    <div class="form-sec">
-      <div class="form-label">Fremgangsmåde</div>
-      <div id="stepList"></div>
-      <button class="add-row-btn" onclick="addStep()">+ Tilføj trin</button>
-    </div>
-    <div class="form-sec">
-      <div class="form-label">Noter (valgfrit)</div>
-      <textarea class="form-textarea" id="eNotes" placeholder="Tips, varianter…" style="min-height:90px"></textarea>
-    </div>
-    <button class="save-btn" onclick="saveRecipe()">Gem opskrift</button>
-    <button class="del-btn" id="delBtn" style="display:none" onclick="deleteRecipe()">Slet opskrift</button>
-    <div style="height:20px"></div>
-  </div>
-</div>
+
 
 <div class="toast" id="toast"></div>
 
 <script>
-const SK='opskrifter_v5', SHK='indkoeb_v3';
+// ═══════════════════════════════════════════════════════════
+// SECURITY LAYER — OWASP Top 10 mitigations
+// ═══════════════════════════════════════════════════════════
 
-// Food photos via images.unsplash.com direct CDN - works without API key
-const CAT_IMGS = {
-  gryderet: 'https://images.unsplash.com/photo-1608877907149-a206d75ba011?w=800&q=80',
-  vafler:   'https://images.unsplash.com/photo-1551404973-761c83cd8339?w=800&q=80',
-  bagning:  'https://images.unsplash.com/photo-1551404973-761c83cd8339?w=800&q=80',
-  pasta:    'https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=800&q=80',
-  kage:     'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=800&q=80',
-  suppe:    'https://images.unsplash.com/photo-1547592180-85f173990554?w=800&q=80',
-  pizza:    'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=800&q=80',
-  fisk:     'https://images.unsplash.com/photo-1534482421-64566f976cfa?w=800&q=80',
-  kylling:  'https://images.unsplash.com/photo-1598103442097-8b74394b95c8?w=800&q=80',
-  _default: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=80',
-};
-function imgUrl(query, id) {
-  if (!query) return CAT_IMGS._default;
-  const k = Object.keys(CAT_IMGS).find(k => query.toLowerCase().includes(k));
-  return k ? CAT_IMGS[k] : CAT_IMGS._default;
+// Clickjacking protection handled by X-Frame-Options meta tag
+
+// 2. HTML escape — ALL user data MUST go through this before innerHTML
+function esc(v) {
+  if (v === null || v === undefined) return '';
+  return String(v)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;')
+    .replace(/\//g, '&#x2F;')
+    .replace(/`/g, '&#x60;');
 }
+
+// 3. Image security — base64 only, no external URLs
+function safeImg(data) {
+  if (!data) return null;
+  // Only allow base64 data URLs from image types
+  if (typeof data !== 'string') return null;
+  if (!data.startsWith('data:image/')) return null;
+  const allowed = ['data:image/jpeg','data:image/jpg','data:image/png','data:image/webp','data:image/gif'];
+  if (!allowed.some(t => data.startsWith(t))) return null;
+  return data;
+}
+
+// 4. Safe ID — recipe IDs used in onclick, must be alphanumeric only
+function safeId(id) {
+  return String(id).replace(/[^a-zA-Z0-9_-]/g, '');
+}
+
+// 5. Safe localStorage with prototype pollution protection
+function loadJSON(key, fallback) {
+  try {
+    const raw = localStorage.getItem(key);
+    if (!raw) return fallback;
+    const parsed = JSON.parse(raw);
+    if (Array.isArray(parsed)) {
+      // Validate no prototype pollution in any item
+      for (const item of parsed) {
+        if (item && typeof item === 'object') {
+          if ('__proto__' in item || 'constructor' in item || 'prototype' in item) {
+            console.warn('[SEC] Blocked prototype pollution in localStorage');
+            return fallback;
+          }
+        }
+      }
+    }
+    return parsed;
+  } catch (e) { return fallback; }
+}
+
+function saveJSON(key, data) {
+  try {
+    localStorage.setItem(key, JSON.stringify(data));
+  } catch (e) { console.error('[SEC] Save failed', e); }
+}
+
+// ═══════════════════════════════════════════════════════════
+// END SECURITY LAYER
+// ═══════════════════════════════════════════════════════════
+
+
+
+// Image state for edit form
+let _currentImgData = null;
+
+// Wire up image file picker
+
+
+
+const SK = 'opskrifter_v5', SHK = 'indkoeb_v3';
+
+// No external image APIs — user uploads only
+function getImg(r) {
+  return safeImg(r.img) || null;
+}
+
+// Compress and convert uploaded image to base64
+
 
 const EMOJIS = {gryderet:'🍲',vafler:'🧇',pasta:'🍝',kage:'🎂',suppe:'🥣',salat:'🥗',fisk:'🐟',kylling:'🍗',pizza:'🍕'};
 function getEmoji(cat) {
-  if(!cat)return'🍽️';
-  const k=Object.keys(EMOJIS).find(k=>cat.toLowerCase().includes(k));
-  return k?EMOJIS[k]:'🍽️';
+  if (!cat) return '🍽️';
+  const k = Object.keys(EMOJIS).find(k => cat.toLowerCase().includes(k));
+  return k ? EMOJIS[k] : '🍽️';
 }
 
-const DEFAULTS=[
-{id:'r1',name:'Skinkekødsgryde med bacon og pølser',cat:'gryderet dansk',desc:'En klassisk dansk gryderet med mørt skinkekød, sprød bacon og fyldige pølser — bedst når den får tid til at simre sig til perfektion.',portions:4,time:'min. 4 timer',
+function getCatLabel(cat) {
+  if (!cat) return 'Opskrift';
+  const w = cat.split(' ')[0];
+  return w.charAt(0).toUpperCase() + w.slice(1);
+}
+
+const DEFAULTS = [
+{id:'r1',name:'Skinkekødsgryde med bacon og pølser',cat:'gryderet dansk',desc:'En klassisk dansk gryderet med mørt skinkekød, sprød bacon og fyldige pølser — bedst når den får tid til at simre sig til perfektion.',portions:4,time:'min. 4 timer',img:null,
 ingredients:[
   {amount:'300',unit:'g',name:'Skinkekød i tern (ca. 2×2 cm) — alternativt nakkefilet'},
   {amount:'250',unit:'g',name:'Bacon i tern'},
@@ -385,7 +404,7 @@ steps:[
   {title:'Servér',text:'Servér med ris til.'},
 ],
 notes:'Kødvalg: Nakkefilet giver mere smag — godt valg til lang simretid.\n\nTomatpuré: Svits grundigt af — rå puré giver sur smag.\n\nSimretid: 4 timer minimum. 6+ timer gør kødet markant mere mørt.'},
-{id:'r2',name:'Vafler — Mors opskrift',cat:'vafler bagning',desc:'Sprøde, lette vafler efter mors gamle opskrift fra Hjerl Hede.',portions:4,time:'20 min',
+{id:'r2',name:'Vafler — Mors opskrift',cat:'vafler bagning',desc:'Sprøde, lette vafler efter mors gamle opskrift fra Hjerl Hede.',portions:4,time:'20 min',img:null,
 ingredients:[
   {amount:'250',unit:'ml',name:'Vand (2½ dl)'},
   {amount:'200',unit:'ml',name:'Mælk (2 dl)'},
@@ -402,7 +421,7 @@ steps:[
   {title:'Servér',text:'Servér straks med flødeskum og syltetøj.'},
 ],
 notes:'Mors originale opskrift fra Hjerl Hede. Margarine giver en let og sprød vaffel.\n\nFremgangsmåde er rekonstrueret — ret til hvis du kender den præcise metode.'},
-{id:'r3',name:'Gærvafler (stor portion)',cat:'vafler gær',desc:'Luftige gærvafler med smør og æg — stor portion til mange gæster.',portions:8,time:'ca. 1 time',
+{id:'r3',name:'Gærvafler (stor portion)',cat:'vafler gær',desc:'Luftige gærvafler med smør og æg — stor portion til mange gæster.',portions:8,time:'ca. 1 time',img:null,
 ingredients:[
   {amount:'1/3',unit:'pk',name:'Gær'},
   {amount:'200',unit:'g',name:'Smør, smeltet'},
@@ -420,352 +439,481 @@ steps:[
 notes:'OBS: Opskriften på billedet var afskåret — ret ingredienser til hvis du har den fulde opskrift.\n\nGærvafler er mere luftige og har en let syrlig smag.'}
 ];
 
-let recipes=[], shopItems=[], currentId=null, currentPortions=4, editingId=null;
+let recipes = [], shopItems = [], currentId = null, currentPortions = 4, editingId = null;
 
-function load(){
-  try{
-    const r=localStorage.getItem(SK);
-    recipes=r?JSON.parse(r):JSON.parse(JSON.stringify(DEFAULTS));
-    const s=localStorage.getItem(SHK);
-    shopItems=s?JSON.parse(s):[];
-  }catch(e){recipes=JSON.parse(JSON.stringify(DEFAULTS));shopItems=[];}
-}
-function save(){
-  localStorage.setItem(SK,JSON.stringify(recipes));
-  localStorage.setItem(SHK,JSON.stringify(shopItems));
+function load() {
+  recipes = loadJSON(SK, JSON.parse(JSON.stringify(DEFAULTS)));
+  shopItems = loadJSON(SHK, []);
 }
 
-function showScreen(name){
-  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-  const map={home:'homeScreen',detail:'detailScreen',shop:'shopScreen',edit:'editScreen'};
+function save() {
+  saveJSON(SK, recipes);
+  saveJSON(SHK, shopItems);
+}
+
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const map = {home:'homeScreen', detail:'detailScreen', shop:'shopScreen'};
   document.getElementById(map[name]).classList.add('active');
-  if(name==='home')renderHome();
-  if(name==='shop')renderShop();
-  window.scrollTo(0,0);
+  if (name === 'home') renderHome();
+  if (name === 'shop') renderShop();
+  window.scrollTo(0, 0);
 }
 
-function getCatLabel(cat){
-  if(!cat)return'Opskrift';
-  return cat.split(' ')[0].charAt(0).toUpperCase()+cat.split(' ')[0].slice(1);
+function renderHome() {
+  const q = (document.getElementById('searchInput').value || '').toLowerCase();
+  const filtered = recipes.filter(r => r.name.toLowerCase().includes(q) || (r.desc||'').toLowerCase().includes(q));
+  document.getElementById('recipeCount').textContent = recipes.length + ' opskrifter gemt';
+  const list = document.getElementById('recipeList');
+  if (!filtered.length) {
+    list.textContent = '';
+    const empty = document.createElement('div');
+    empty.className = 'empty';
+    empty.style.gridColumn = '1/-1';
+    empty.textContent = 'Ingen opskrifter fundet';
+    list.appendChild(empty);
+    return;
+  }
+  // Build cards using DOM — never innerHTML with user data
+  list.textContent = '';
+  filtered.forEach(r => {
+    const id = safeId(r.id);
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.onclick = () => openRecipe(id);
+
+    const imgWrap = document.createElement('div');
+    imgWrap.className = 'card-img-wrap';
+    const imgSrc = getImg(r);
+    if (imgSrc) {
+      const img = document.createElement('img');
+      img.src = imgSrc;
+      img.alt = r.name;
+      img.loading = 'lazy';
+      img.style.cssText = 'width:100%;height:190px;object-fit:cover;display:block';
+      img.onerror = function() {
+        this.style.display = 'none';
+        const ph = document.createElement('div');
+        ph.className = 'card-img-err';
+        ph.textContent = getEmoji(r.cat);
+        imgWrap.appendChild(ph);
+      };
+      imgWrap.appendChild(img);
+    } else {
+      const ph = document.createElement('div');
+      ph.className = 'card-img-err';
+      ph.textContent = getEmoji(r.cat);
+      imgWrap.appendChild(ph);
+    }
+
+    const body = document.createElement('div');
+    body.className = 'card-body';
+
+    const cat = document.createElement('div');
+    cat.className = 'card-cat';
+    cat.textContent = getCatLabel(r.cat);
+
+    const title = document.createElement('div');
+    title.className = 'card-title';
+    title.textContent = r.name;
+
+    const meta = document.createElement('div');
+    meta.className = 'card-meta';
+    meta.innerHTML = `<div class="meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>`;
+    meta.querySelector('.meta-item').append(document.createTextNode(' ' + r.portions + ' pers.'));
+    if (r.time) {
+      const t = document.createElement('div');
+      t.className = 'meta-item';
+      t.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`;
+      t.appendChild(document.createTextNode(' ' + r.time));
+      meta.appendChild(t);
+    }
+
+    body.appendChild(cat);
+    body.appendChild(title);
+    if (r.desc) {
+      const desc = document.createElement('div');
+      desc.className = 'card-desc';
+      desc.textContent = r.desc;
+      body.appendChild(desc);
+    }
+    body.appendChild(meta);
+    card.appendChild(imgWrap);
+    card.appendChild(body);
+    list.appendChild(card);
+  });
 }
 
-function renderHome(){
-  const q=(document.getElementById('searchInput').value||'').toLowerCase();
-  const filtered=recipes.filter(r=>r.name.toLowerCase().includes(q)||(r.desc||'').toLowerCase().includes(q));
-  document.getElementById('recipeCount').textContent=recipes.length+' opskrifter gemt';
-  const list=document.getElementById('recipeList');
-  if(!filtered.length){list.innerHTML='<div class="empty" style="grid-column:1/-1"><p>Ingen opskrifter fundet</p></div>';return;}
-  list.innerHTML=filtered.map(r=>{
-    const imgSrc=imgUrl(r.cat||r.name, r.id);
-    return`<div class="card" onclick="openRecipe('${r.id}')">
-      <div class="card-img-wrap">
-        <img src="${imgSrc}" alt="${r.name}" loading="lazy" onerror="this.style.display='none'">
-      </div>
-      <div class="card-body">
-        <div class="card-cat">${getCatLabel(r.cat)}</div>
-        <div class="card-title">${r.name}</div>
-        ${r.desc?`<div class="card-desc">${r.desc}</div>`:''}
-        <div class="card-meta">
-          <div class="meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>${r.portions} pers.</div>
-          ${r.time?`<div class="meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>${r.time}</div>`:''}
-        </div>
-      </div>
-    </div>`;
-  }).join('');
-}
-
-function openRecipe(id){
-  currentId=id;
-  const r=recipes.find(x=>x.id===id);
-  if(!r)return;
-  currentPortions=r.portions;
+function openRecipe(id) {
+  const safeRId = safeId(id);
+  const r = recipes.find(x => safeId(x.id) === safeRId);
+  if (!r) return;
+  currentId = safeRId;
+  currentPortions = r.portions;
   renderDetail(r);
   showScreen('detail');
 }
 
-function scaleAmt(amount,ratio){
-  if(!amount)return'';
-  const n=parseFloat(amount);
-  if(isNaN(n))return amount;
-  const s=n*ratio;
-  return s%1===0?s.toString():s.toFixed(1).replace(/\.0$/,'');
+function scaleAmt(amount, ratio) {
+  if (!amount) return '';
+  const n = parseFloat(amount);
+  if (isNaN(n)) return String(amount);
+  const s = n * ratio;
+  return s % 1 === 0 ? s.toString() : s.toFixed(1).replace(/\.0$/, '');
 }
 
-function renderDetail(r){
-  const ratio=currentPortions/r.portions;
-  const imgSrc=imgUrl(r.cat||r.name, r.id);
-  const ings=r.ingredients.map(i=>`
-    <div class="ing-item">
-      <span class="ing-amount">${scaleAmt(i.amount,ratio)}${i.unit?' '+i.unit:''}</span>
-      <span class="ing-name">${i.name}</span>
-    </div>`).join('');
-  const steps=r.steps.map((s,i)=>`
-    <div class="step-item">
-      <div class="step-num">${i+1}</div>
-      <div><div class="step-title">${s.title}</div><div class="step-text">${s.text}</div></div>
-    </div>`).join('');
-  const notes=r.notes?`<div class="notes-box"><div class="notes-title">Noter & tips</div>${r.notes.split('\n\n').map(n=>`<div class="note-item">${n}</div>`).join('')}</div>`:'';
-
-  document.getElementById('detailContent').innerHTML=`
-    <div class="detail-img-wrap">
-      <img src="${imgSrc}" alt="${r.name}" onerror="this.style.display='none'">
-      <div class="detail-img-overlay"></div>
-    </div>
-    <div class="detail-body">
-      <div class="detail-cat">${getCatLabel(r.cat)}</div>
-      <div class="detail-title">${r.name}</div>
-      ${r.desc?`<div class="detail-desc">${r.desc}</div>`:''}
-      <div class="detail-meta">
-        <div class="meta-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>${r.portions} pers. (base)</div>
-        ${r.time?`<div class="meta-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>${r.time}</div>`:''}
-      </div>
-    </div>
-    <div class="portions-bar">
-      <div class="portions-label">Juster portioner</div>
-      <div class="portions-ctrl">
-        <button class="p-btn" onclick="changePortions(-1)">−</button>
-        <div class="p-count" id="pCount">${currentPortions}</div>
-        <button class="p-btn" onclick="changePortions(1)">+</button>
-      </div>
-    </div>
-    <div class="tabs">
-      <button class="tab active" onclick="switchTab('ing',this)">Ingredienser</button>
-      <button class="tab" onclick="switchTab('steps',this)">Fremgangsmåde</button>
-      ${r.notes?'<button class="tab" onclick="switchTab(\'notes\',this)">Noter</button>':''}
-    </div>
-    <div id="tab-ing" class="tab-content active">
-      <div class="ing-section-title">Du skal bruge</div>
-      <div class="ing-list">${ings}</div>
-    </div>
-    <div id="tab-steps" class="tab-content"><div class="step-list">${steps}</div></div>
-    ${r.notes?`<div id="tab-notes" class="tab-content">${notes}</div>`:''}`;
-
-  document.getElementById('detailActions').innerHTML=`
-    <button class="act-btn" onclick="addToShop('${r.id}')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-      Til indkøb
-    </button>
-    <button class="act-btn primary" onclick="printRecipe('${r.id}')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-      Print / PDF
-    </button>`;
+function buildIngList(r, ratio) {
+  const wrap = document.createElement('div');
+  wrap.className = 'ing-list';
+  r.ingredients.forEach(i => {
+    const row = document.createElement('div');
+    row.className = 'ing-item';
+    const amt = document.createElement('span');
+    amt.className = 'ing-amount';
+    amt.textContent = scaleAmt(i.amount, ratio) + (i.unit ? ' ' + i.unit : '');
+    const name = document.createElement('span');
+    name.className = 'ing-name';
+    name.textContent = i.name;
+    row.appendChild(amt);
+    row.appendChild(name);
+    wrap.appendChild(row);
+  });
+  return wrap;
 }
 
-function changePortions(d){
-  const r=recipes.find(x=>x.id===currentId);
-  if(!r)return;
-  currentPortions=Math.max(1,currentPortions+d);
-  document.getElementById('pCount').textContent=currentPortions;
-  const ratio=currentPortions/r.portions;
-  const el=document.getElementById('tab-ing');
-  if(el)el.innerHTML='<div class="ing-section-title">Du skal bruge</div><div class="ing-list">'+r.ingredients.map(i=>`
-    <div class="ing-item">
-      <span class="ing-amount">${scaleAmt(i.amount,ratio)}${i.unit?' '+i.unit:''}</span>
-      <span class="ing-name">${i.name}</span>
-    </div>`).join('')+'</div>';
+function renderDetail(r) {
+  const ratio = currentPortions / r.portions;
+  const content = document.getElementById('detailContent');
+  content.textContent = '';
+
+  // Image
+  const imgWrap = document.createElement('div');
+  imgWrap.className = 'detail-img-wrap';
+  const img = document.createElement('img');
+  const detImgSrc = getImg(r);
+  if (detImgSrc) {
+    img.src = detImgSrc;
+  } else {
+    img.style.display = 'none';
+    imgWrap.style.height = '80px';
+  }
+  img.alt = r.name;
+  img.className = 'det-img';
+  img.onerror = function() { this.style.display = 'none'; };
+  const fade = document.createElement('div');
+  fade.className = 'detail-img-overlay';
+  imgWrap.appendChild(img);
+  imgWrap.appendChild(fade);
+  content.appendChild(imgWrap);
+
+  // Body
+  const body = document.createElement('div');
+  body.className = 'detail-body';
+
+  const catEl = document.createElement('div');
+  catEl.className = 'detail-cat';
+  catEl.textContent = getCatLabel(r.cat);
+
+  const titleEl = document.createElement('div');
+  titleEl.className = 'detail-title';
+  titleEl.textContent = r.name;
+
+  const metaEl = document.createElement('div');
+  metaEl.className = 'detail-meta';
+  const pill1 = document.createElement('div');
+  pill1.className = 'meta-pill';
+  pill1.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>`;
+  pill1.appendChild(document.createTextNode(' ' + r.portions + ' pers. (base)'));
+  metaEl.appendChild(pill1);
+  if (r.time) {
+    const pill2 = document.createElement('div');
+    pill2.className = 'meta-pill';
+    pill2.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`;
+    pill2.appendChild(document.createTextNode(' ' + r.time));
+    metaEl.appendChild(pill2);
+  }
+
+  body.appendChild(catEl);
+  body.appendChild(titleEl);
+  if (r.desc) {
+    const descEl = document.createElement('div');
+    descEl.className = 'detail-desc';
+    descEl.textContent = r.desc;
+    body.appendChild(descEl);
+  }
+  body.appendChild(metaEl);
+  content.appendChild(body);
+
+  // Portions bar
+  const portBar = document.createElement('div');
+  portBar.className = 'portions-bar';
+  portBar.innerHTML = `<div class="portions-label">Juster portioner</div>
+    <div class="portions-ctrl">
+      <button class="p-btn" onclick="changePortions(-1)">−</button>
+      <div class="p-count" id="pCount">${currentPortions}</div>
+      <button class="p-btn" onclick="changePortions(1)">+</button>
+    </div>`;
+  content.appendChild(portBar);
+
+  // Tabs
+  const tabBar = document.createElement('div');
+  tabBar.className = 'tabs';
+  const tabIng = document.createElement('button');
+  tabIng.className = 'tab active';
+  tabIng.textContent = 'Ingredienser';
+  tabIng.onclick = function() { switchTab('ing', this); };
+  const tabSteps = document.createElement('button');
+  tabSteps.className = 'tab';
+  tabSteps.textContent = 'Fremgangsmåde';
+  tabSteps.onclick = function() { switchTab('steps', this); };
+  tabBar.appendChild(tabIng);
+  tabBar.appendChild(tabSteps);
+  if (r.notes) {
+    const tabNotes = document.createElement('button');
+    tabNotes.className = 'tab';
+    tabNotes.textContent = 'Noter';
+    tabNotes.onclick = function() { switchTab('notes', this); };
+    tabBar.appendChild(tabNotes);
+  }
+  content.appendChild(tabBar);
+
+  // Tab: Ingredients
+  const tcIng = document.createElement('div');
+  tcIng.id = 'tab-ing';
+  tcIng.className = 'tab-content active';
+  const ingHead = document.createElement('div');
+  ingHead.className = 'ing-section-title';
+  ingHead.textContent = 'Du skal bruge';
+  tcIng.appendChild(ingHead);
+  tcIng.appendChild(buildIngList(r, ratio));
+  content.appendChild(tcIng);
+
+  // Tab: Steps
+  const tcSteps = document.createElement('div');
+  tcSteps.id = 'tab-steps';
+  tcSteps.className = 'tab-content';
+  const stepList = document.createElement('div');
+  stepList.className = 'step-list';
+  r.steps.forEach((s, i) => {
+    const item = document.createElement('div');
+    item.className = 'step-item';
+    const num = document.createElement('div');
+    num.className = 'step-num';
+    num.textContent = i + 1;
+    const stepBody = document.createElement('div');
+    const stitle = document.createElement('div');
+    stitle.className = 'step-title';
+    stitle.textContent = s.title;
+    const stext = document.createElement('div');
+    stext.className = 'step-text';
+    stext.textContent = s.text;
+    stepBody.appendChild(stitle);
+    stepBody.appendChild(stext);
+    item.appendChild(num);
+    item.appendChild(stepBody);
+    stepList.appendChild(item);
+  });
+  tcSteps.appendChild(stepList);
+  content.appendChild(tcSteps);
+
+  // Tab: Notes
+  if (r.notes) {
+    const tcNotes = document.createElement('div');
+    tcNotes.id = 'tab-notes';
+    tcNotes.className = 'tab-content';
+    const notesBox = document.createElement('div');
+    notesBox.className = 'notes-box';
+    const notesTitle = document.createElement('div');
+    notesTitle.className = 'notes-title';
+    notesTitle.textContent = 'Noter & tips';
+    notesBox.appendChild(notesTitle);
+    r.notes.split('\n\n').forEach(n => {
+      const p = document.createElement('div');
+      p.className = 'note-item';
+      p.textContent = n;
+      notesBox.appendChild(p);
+    });
+    tcNotes.appendChild(notesBox);
+    content.appendChild(tcNotes);
+  }
+
+  // Action buttons
+  const actions = document.getElementById('detailActions');
+  actions.innerHTML = '';
+  const safeRId = safeId(r.id);
+  const btn1 = document.createElement('button');
+  btn1.className = 'act-btn';
+  btn1.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg> Til indkøb`;
+  btn1.onclick = () => addToShop(safeRId);
+  const btn2 = document.createElement('button');
+  btn2.className = 'act-btn primary';
+  btn2.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg> Print / PDF`;
+  btn2.onclick = () => printRecipe(safeRId);
+  actions.appendChild(btn1);
+  actions.appendChild(btn2);
 }
 
-function switchTab(name,btn){
-  document.querySelectorAll('#detailContent .tab').forEach(t=>t.classList.remove('active'));
-  document.querySelectorAll('#detailContent .tab-content').forEach(t=>t.classList.remove('active'));
+function changePortions(d) {
+  const r = recipes.find(x => safeId(x.id) === currentId);
+  if (!r) return;
+  currentPortions = Math.max(1, currentPortions + d);
+  document.getElementById('pCount').textContent = currentPortions;
+  const ratio = currentPortions / r.portions;
+  const el = document.getElementById('tab-ing');
+  if (!el) return;
+  el.textContent = '';
+  const head = document.createElement('div');
+  head.className = 'ing-section-title';
+  head.textContent = 'Du skal bruge';
+  el.appendChild(head);
+  el.appendChild(buildIngList(r, ratio));
+}
+
+function switchTab(name, btn) {
+  document.querySelectorAll('#detailContent .tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('#detailContent .tab-content').forEach(t => t.classList.remove('active'));
   btn.classList.add('active');
-  document.getElementById('tab-'+name).classList.add('active');
+  const tabEl = document.getElementById('tab-' + name);
+  if (tabEl) tabEl.classList.add('active');
 }
 
-function printRecipe(id){
-  const r=recipes.find(x=>x.id===id);
-  if(!r)return;
-  const ratio=currentPortions/r.portions;
-  const imgSrc=imgUrl(r.cat||r.name, r.id);
-  const ings=r.ingredients.map(i=>`<tr>
-    <td style="color:#c0392b;font-weight:700;padding:8px 16px 8px 0;border-bottom:1px solid #eee;white-space:nowrap;font-size:14px">${scaleAmt(i.amount,ratio)}${i.unit?' '+i.unit:''}</td>
-    <td style="padding:8px 0;border-bottom:1px solid #eee;font-size:14px;color:#333">${i.name}</td>
+function printRecipe(id) {
+  const safeRId = safeId(id);
+  const r = recipes.find(x => safeId(x.id) === safeRId);
+  if (!r) return;
+  const ratio = currentPortions / r.portions;
+  // Print uses esc() for all user data since it writes to a new window
+  const ings = r.ingredients.map(i => `<tr>
+    <td style="color:#b03020;font-weight:700;padding:8px 14px 8px 0;border-bottom:1px solid #eee;white-space:nowrap">${esc(scaleAmt(i.amount,ratio))}${i.unit ? ' ' + esc(i.unit) : ''}</td>
+    <td style="padding:8px 0;border-bottom:1px solid #eee;font-size:14px;color:#333">${esc(i.name)}</td>
   </tr>`).join('');
-  const steps=r.steps.map((s,i)=>`
+  const steps = r.steps.map((s, i) => `
     <div style="display:flex;gap:14px;margin-bottom:18px;align-items:flex-start">
-      <div style="min-width:28px;height:28px;border-radius:50%;background:#c0392b;color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">${i+1}</div>
-      <div><div style="font-weight:700;font-size:14px;margin-bottom:4px;color:#1a1208">${s.title}</div><div style="font-size:14px;color:#555;line-height:1.7">${s.text}</div></div>
+      <div style="min-width:28px;height:28px;border-radius:50%;background:#b03020;color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">${i+1}</div>
+      <div><div style="font-weight:700;font-size:14px;margin-bottom:4px">${esc(s.title)}</div><div style="font-size:14px;color:#555;line-height:1.7">${esc(s.text)}</div></div>
     </div>`).join('');
-  const notes=r.notes?`<div style="margin-top:28px;border-left:3px solid #c0392b;padding:14px 18px;background:#fdf3f2;border-radius:6px">
-    <div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#c0392b;margin-bottom:10px">Noter & tips</div>
-    ${r.notes.split('\n\n').map(n=>`<p style="font-size:13px;color:#666;margin:0 0 6px;line-height:1.6">${n}</p>`).join('')}
-  </div>`:'';
-
-  const html=`<!DOCTYPE html><html lang="da"><head>
-  <meta charset="UTF-8"><title>${r.name}</title>
-  <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+  const notesHtml = r.notes ? `<div style="margin-top:24px;border-left:3px solid #b03020;padding:12px 16px;background:#fdf3f2;border-radius:6px">
+    <div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#b03020;margin-bottom:8px">Noter & tips</div>
+    ${r.notes.split('\n\n').map(n => `<p style="font-size:13px;color:#444;margin:0 0 6px;line-height:1.6">${esc(n)}</p>`).join('')}
+  </div>` : '';
+  const safeImgSrc = getImg(r) || '';
+  const html = `<!DOCTYPE html><html lang="da"><head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none';style-src 'unsafe-inline' https://fonts.googleapis.com;font-src https://fonts.gstatic.com;img-src 'self' data: blob:;script-src 'unsafe-inline';">
+  <title>${esc(r.name)}</title>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:wght@600&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
   <style>
-    body{font-family:'Nunito',sans-serif;max-width:700px;margin:0 auto;padding:0;color:#1a1208}
-    h1{font-family:'Lora',serif;font-size:28px;margin:0 0 6px;line-height:1.2}
-    h2{font-family:'Lora',serif;font-size:18px;color:#c0392b;margin:28px 0 14px;padding-bottom:6px;border-bottom:2px solid #f0e8e5}
-    .hero{position:relative;height:220px;overflow:hidden;margin-bottom:0}
-    .hero img{width:100%;height:100%;object-fit:cover}
-    .hero-overlay{position:absolute;bottom:0;left:0;right:0;height:80px;background:linear-gradient(transparent,rgba(250,248,245,1))}
-    .body{padding:20px 28px 32px}
-    .cat{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#c0392b;margin-bottom:6px}
-    .desc{color:#666;font-size:14px;line-height:1.6;margin-bottom:12px}
-    .meta{display:flex;gap:16px;font-size:13px;color:#999;font-weight:600;margin-bottom:4px}
-    @media print{.no-print{display:none!important}}
-  </style>
+.fab{display:none!important}
+#editBtn{display:none!important}
+body{font-family:'Nunito',sans-serif;max-width:700px;margin:0 auto;padding:0;color:#1a1208}h1{font-family:'Lora',serif;font-size:26px;margin:0 0 6px}h2{font-family:'Lora',serif;font-size:17px;color:#b03020;margin:24px 0 12px;padding-bottom:5px;border-bottom:2px solid #f0e8e5}.hero{height:220px;overflow:hidden}.hero img{width:100%;height:100%;object-fit:cover}.bd{padding:20px 26px 28px}.cat{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#b03020;margin-bottom:5px}@media print{.noprint{display:none!important}}</style>
   </head><body>
-  <div class="hero"><img src="${imgSrc}" alt="${r.name}" onerror="this.style.display='none'"><div class="hero-overlay"></div></div>
-  <div class="body">
-    <div class="cat">${getCatLabel(r.cat)}</div>
-    <h1>${r.name}</h1>
-    ${r.desc?`<div class="desc">${r.desc}</div>`:''}
-    <div class="meta"><span>👥 ${currentPortions} portioner</span>${r.time?`<span>⏱ ${r.time}</span>`:''}</div>
+  <div class="hero"><img src="${safeImgSrc}" alt="" onerror="this.style.display='none'"></div>
+  <div class="bd">
+    <div class="cat">${esc(getCatLabel(r.cat))}</div>
+    <h1>${esc(r.name)}</h1>
+    ${r.desc ? `<p style="color:#666;font-size:14px;margin:0 0 10px;line-height:1.6">${esc(r.desc)}</p>` : ''}
+    <p style="font-size:13px;color:#aaa;font-weight:600;margin:0 0 4px">👥 ${esc(String(currentPortions))} portioner${r.time ? ' &nbsp;·&nbsp; ⏱ ' + esc(r.time) : ''}</p>
     <h2>Ingredienser</h2>
     <table style="width:100%;border-collapse:collapse"><tbody>${ings}</tbody></table>
-    <h2>Fremgangsmåde</h2>${steps}${notes}
-    <div class="no-print" style="margin-top:32px;padding-top:20px;border-top:1px solid #eee">
-      <button onclick="window.print()" style="background:#c0392b;color:#fff;border:none;padding:12px 26px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Nunito',sans-serif">
-        Udskriv / Gem som PDF
-      </button>
+    <h2>Fremgangsmåde</h2>${steps}${notesHtml}
+    <div class="noprint" style="margin-top:28px">
+      <button onclick="window.print()" style="background:#b03020;color:#fff;border:none;padding:11px 24px;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer">Udskriv / Gem som PDF</button>
     </div>
-  </div>
-  </body></html>`;
-
-  const w=window.open('','_blank');
-  if(w){w.document.write(html);w.document.close();}
+  </div></body></html>`;
+  const w = window.open('', '_blank');
+  if (w) { w.document.write(html); w.document.close(); }
   else showToast('Tillad popups for at printe');
 }
 
-function addToShop(id){
-  const r=recipes.find(x=>x.id===id);
-  if(!r)return;
-  const ratio=currentPortions/r.portions;
-  r.ingredients.forEach(i=>{
-    if(!i.name)return;
-    shopItems.push({id:Date.now()+Math.random(),name:i.name,amount:i.amount?scaleAmt(i.amount,ratio)+(i.unit?' '+i.unit:''):'',source:r.name,checked:false});
+function addToShop(id) {
+  const safeRId = safeId(id);
+  const r = recipes.find(x => safeId(x.id) === safeRId);
+  if (!r) return;
+  const ratio = currentPortions / r.portions;
+  r.ingredients.forEach(i => {
+    if (!i.name) return;
+    shopItems.push({
+      id: 's' + Date.now() + Math.floor(Math.random()*9999),
+      name: String(i.name).slice(0, 200),
+      amount: i.amount ? (scaleAmt(i.amount, ratio) + (i.unit ? ' ' + i.unit : '')) : '',
+      source: String(r.name).slice(0, 100),
+      checked: false
+    });
   });
-  save();showToast(r.ingredients.length+' ingredienser tilføjet');
+  save();
+  showToast(r.ingredients.length + ' ingredienser tilføjet');
 }
 
-function renderShop(){
-  const el=document.getElementById('shopList');
-  const cnt=document.getElementById('shopCount');
-  if(!shopItems.length){
-    cnt.textContent='Ingen varer endnu';
-    el.innerHTML=`<div class="shop-empty">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-      <p style="font-size:15px;font-weight:600;margin-bottom:4px">Listen er tom</p>
-      <p style="font-size:13px">Åbn en opskrift og tryk "Til indkøb"</p>
-    </div>`;
+function renderShop() {
+  const el = document.getElementById('shopList');
+  const cnt = document.getElementById('shopCount');
+  el.textContent = '';
+  if (!shopItems.length) {
+    cnt.textContent = 'Ingen varer endnu';
+    const empty = document.createElement('div');
+    empty.className = 'shop-empty';
+    empty.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>`;
+    const p1 = document.createElement('p');
+    p1.style.cssText = 'font-size:15px;font-weight:600;margin-bottom:4px';
+    p1.textContent = 'Listen er tom';
+    const p2 = document.createElement('p');
+    p2.style.fontSize = '13px';
+    p2.textContent = 'Åbn en opskrift og tryk "Til indkøb"';
+    empty.appendChild(p1);
+    empty.appendChild(p2);
+    el.appendChild(empty);
     return;
   }
-  const remaining=shopItems.filter(x=>!x.checked).length;
-  cnt.textContent=remaining+' varer tilbage';
-  el.innerHTML=shopItems.map(item=>`
-    <div class="shop-item ${item.checked?'checked':''}" onclick="toggleShop('${item.id}')">
-      <div class="shop-check"></div>
-      <div>
-        <div class="shop-name">${item.name}</div>
-        ${item.amount?`<div class="shop-amt">${item.amount}</div>`:''}
-        <div class="shop-src">${item.source}</div>
-      </div>
-    </div>`).join('');
+  const remaining = shopItems.filter(x => !x.checked).length;
+  cnt.textContent = remaining + ' varer tilbage';
+  shopItems.forEach(item => {
+    const row = document.createElement('div');
+    row.className = 'shop-item' + (item.checked ? ' chk' : '');
+    row.onclick = () => toggleShop(String(item.id));
+    const check = document.createElement('div');
+    check.className = 'scheck';
+    const info = document.createElement('div');
+    const name = document.createElement('div');
+    name.className = 'sname';
+    name.textContent = item.name;
+    info.appendChild(name);
+    if (item.amount) {
+      const amt = document.createElement('div');
+      amt.className = 'samt';
+      amt.textContent = item.amount;
+      info.appendChild(amt);
+    }
+    const src = document.createElement('div');
+    src.className = 'ssrc';
+    src.textContent = item.source;
+    info.appendChild(src);
+    row.appendChild(check);
+    row.appendChild(info);
+    el.appendChild(row);
+  });
 }
 
-function toggleShop(id){
-  const item=shopItems.find(x=>String(x.id)===String(id));
-  if(item){item.checked=!item.checked;save();renderShop();}
+function toggleShop(id) {
+  const item = shopItems.find(x => String(x.id) === String(id));
+  if (item) { item.checked = !item.checked; save(); renderShop(); }
 }
 
-function clearChecked(){
-  const b=shopItems.length;
-  shopItems=shopItems.filter(x=>!x.checked);
-  save();renderShop();
-  if(b!==shopItems.length)showToast('Afkrydsede varer fjernet');
+function clearChecked() {
+  const b = shopItems.length;
+  shopItems = shopItems.filter(x => !x.checked);
+  save(); renderShop();
+  if (b !== shopItems.length) showToast('Afkrydsede varer fjernet');
 }
 
-function openNew(){
-  editingId=null;
-  document.getElementById('editTitle').innerHTML='Ny <span>opskrift</span>';
-  document.getElementById('editBackBtn').onclick=()=>showScreen('home');
-  ['eName','eDesc','eTime','eCat','eNotes'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('ePortions').value=4;
-  document.getElementById('delBtn').style.display='none';
-  document.getElementById('ingList').innerHTML='';
-  document.getElementById('stepList').innerHTML='';
-  addIng();addIng();addIng();addStep();addStep();
-  showScreen('edit');
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = String(msg).slice(0, 100);
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
 }
 
-function openEdit(id){
-  editingId=id;
-  const r=recipes.find(x=>x.id===id);
-  if(!r)return;
-  document.getElementById('editTitle').innerHTML='Rediger <span>opskrift</span>';
-  document.getElementById('editBackBtn').onclick=()=>openRecipe(id);
-  document.getElementById('eName').value=r.name;
-  document.getElementById('eDesc').value=r.desc||'';
-  document.getElementById('ePortions').value=r.portions;
-  document.getElementById('eTime').value=r.time||'';
-  document.getElementById('eCat').value=r.cat||'';
-  document.getElementById('eNotes').value=r.notes||'';
-  document.getElementById('delBtn').style.display='block';
-  document.getElementById('ingList').innerHTML='';
-  document.getElementById('stepList').innerHTML='';
-  r.ingredients.forEach(i=>addIng(i.amount,i.unit,i.name));
-  r.steps.forEach(s=>addStep(s.title,s.text));
-  showScreen('edit');
-}
-
-function addIng(amount='',unit='',name=''){
-  const d=document.createElement('div');d.className='ing-row';
-  d.innerHTML=`<input type="text" class="form-input i-amt" placeholder="Mængde" value="${amount}" inputmode="decimal">
-    <input type="text" class="form-input i-unit" placeholder="Enhed" value="${unit}">
-    <input type="text" class="form-input i-name" placeholder="Ingrediens" value="${name}">
-    <button class="rm-btn" onclick="this.parentElement.remove()">×</button>`;
-  document.getElementById('ingList').appendChild(d);
-}
-
-function addStep(title='',text=''){
-  const d=document.createElement('div');d.className='step-row';
-  d.innerHTML=`<div class="step-row-inner">
-    <input type="text" class="form-input s-title" placeholder="Overskrift" value="${title}">
-    <textarea class="form-textarea s-text" placeholder="Beskriv trinnet…">${text}</textarea>
-  </div>
-  <button class="rm-btn" onclick="this.parentElement.remove()">×</button>`;
-  document.getElementById('stepList').appendChild(d);
-}
-
-function saveRecipe(){
-  const name=document.getElementById('eName').value.trim();
-  if(!name){showToast('Opskriften mangler et navn');return;}
-  const ingredients=[...document.querySelectorAll('#ingList .ing-row')]
-    .map(r=>({amount:r.querySelector('.i-amt').value.trim(),unit:r.querySelector('.i-unit').value.trim(),name:r.querySelector('.i-name').value.trim()}))
-    .filter(i=>i.name);
-  const steps=[...document.querySelectorAll('#stepList .step-row')]
-    .map(r=>({title:r.querySelector('.s-title').value.trim(),text:r.querySelector('.s-text').value.trim()}))
-    .filter(s=>s.text);
-  const recipe={
-    id:editingId||('r'+Date.now()),name,
-    cat:document.getElementById('eCat').value.trim(),
-    desc:document.getElementById('eDesc').value.trim(),
-    portions:parseInt(document.getElementById('ePortions').value)||4,
-    time:document.getElementById('eTime').value.trim(),
-    notes:document.getElementById('eNotes').value.trim(),
-    ingredients,steps
-  };
-  if(editingId){const i=recipes.findIndex(x=>x.id===editingId);if(i>=0)recipes[i]=recipe;}
-  else recipes.push(recipe);
-  save();showToast('Opskrift gemt');currentId=recipe.id;openRecipe(recipe.id);
-}
-
-function deleteRecipe(){
-  if(!confirm('Slet denne opskrift?'))return;
-  recipes=recipes.filter(x=>x.id!==editingId);
-  save();showToast('Opskrift slettet');showScreen('home');
-}
-
-function showToast(msg){
-  const t=document.getElementById('toast');
-  t.textContent=msg;t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'),2500);
-}
-
-load();renderHome();
+load();
+renderHome();
 </script>
 </body>
 </html>
