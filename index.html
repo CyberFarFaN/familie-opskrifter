@@ -7,6 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Opskrifter">
 <meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'none'; form-action 'none'; base-uri 'none';">
 <meta name="theme-color" content="#faf8f5">
 <title>Familieopskrifter</title>
 <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Nunito:wght@300;400;600&display=swap" rel="stylesheet">
@@ -282,7 +283,17 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-
 // SECURITY LAYER — OWASP Top 10 mitigations
 // ═══════════════════════════════════════════════════════════
 
-// Clickjacking protection handled by X-Frame-Options meta tag
+// 1. Clickjacking protection — block cross-origin framing
+if (window.top !== window.self) {
+  try { void window.top.location.origin; } catch(e) {
+    document.body.textContent = '';
+    const msg = document.createElement('p');
+    msg.style.cssText = 'font-family:sans-serif;padding:40px;color:#666';
+    msg.textContent = 'Denne side kan ikke vises i en iframe.';
+    document.body.appendChild(msg);
+    throw new Error('Blocked: cross-origin iframe');
+  }
+}
 
 // 2. HTML escape — ALL user data MUST go through this before innerHTML
 function esc(v) {
@@ -297,14 +308,13 @@ function esc(v) {
     .replace(/`/g, '&#x60;');
 }
 
-// 3. Image security — base64 only, no external URLs
+// 3. Image security — base64 only, no external URLs, validated charset
 function safeImg(data) {
   if (!data) return null;
-  // Only allow base64 data URLs from image types
   if (typeof data !== 'string') return null;
-  if (!data.startsWith('data:image/')) return null;
-  const allowed = ['data:image/jpeg','data:image/jpg','data:image/png','data:image/webp','data:image/gif'];
-  if (!allowed.some(t => data.startsWith(t))) return null;
+  if (data.length > 5 * 1024 * 1024) return null; // 5MB max
+  // Strict regex: allowed image types + ;base64, + valid base64 chars only
+  if (!/^data:image\/(jpeg|jpg|png|webp|gif);base64,[A-Za-z0-9+/=]+$/.test(data)) return null;
   return data;
 }
 
@@ -313,23 +323,26 @@ function safeId(id) {
   return String(id).replace(/[^a-zA-Z0-9_-]/g, '');
 }
 
-// 5. Safe localStorage with prototype pollution protection
+// 5. Safe localStorage with deep prototype pollution protection
+function hasPoison(obj, depth) {
+  if (depth > 5 || !obj || typeof obj !== 'object') return false;
+  const keys = Object.keys(obj);
+  for (const k of keys) {
+    if (k === '__proto__' || k === 'constructor' || k === 'prototype') return true;
+    if (typeof obj[k] === 'object' && obj[k] !== null && hasPoison(obj[k], depth + 1)) return true;
+  }
+  return false;
+}
+
 function loadJSON(key, fallback) {
   try {
     const raw = localStorage.getItem(key);
     if (!raw) return fallback;
+    if (raw.length > 10 * 1024 * 1024) return fallback; // 10MB sanity limit
     const parsed = JSON.parse(raw);
-    if (Array.isArray(parsed)) {
-      // Validate no prototype pollution in any item
-      for (const item of parsed) {
-        if (item && typeof item === 'object') {
-          if ('__proto__' in item || 'constructor' in item || 'prototype' in item) {
-            console.warn('[SEC] Blocked prototype pollution in localStorage');
-            return fallback;
-          }
-        }
-      }
-    }
+    // Must be an array (recipes or shop items)
+    if (!Array.isArray(parsed)) { console.warn('[SEC] Expected array in localStorage'); return fallback; }
+    if (hasPoison(parsed, 0)) { console.warn('[SEC] Blocked prototype pollution'); return fallback; }
     return parsed;
   } catch (e) { return fallback; }
 }
@@ -452,8 +465,9 @@ function save() {
 }
 
 function showScreen(name) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   const map = {home:'homeScreen', detail:'detailScreen', shop:'shopScreen'};
+  if (!map[name]) return;
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(map[name]).classList.add('active');
   if (name === 'home') renderHome();
   if (name === 'shop') renderShop();
@@ -799,7 +813,7 @@ function printRecipe(id) {
   const safeImgSrc = getImg(r) || '';
   const html = `<!DOCTYPE html><html lang="da"><head>
   <meta charset="UTF-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'none';style-src 'unsafe-inline' https://fonts.googleapis.com;font-src https://fonts.gstatic.com;img-src 'self' data: blob:;script-src 'unsafe-inline';">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none';script-src 'unsafe-inline';style-src 'unsafe-inline' https://fonts.googleapis.com;font-src https://fonts.gstatic.com;img-src 'self' data: blob:;form-action 'none';base-uri 'none';">
   <title>${esc(r.name)}</title>
   <link href="https://fonts.googleapis.com/css2?family=Lora:wght@600&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
   <style>
