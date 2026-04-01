@@ -29,7 +29,7 @@ Just open the link on your phone or computer. That's it.
 
 To use it as an app on iPhone: open the link in Safari, tap the share button, and choose **Add to Home Screen**.
 
-Recipes are stored locally on each device. Stefan pushes updates to the app itself — your saved recipes stay on your phone.
+Recipes are stored locally on each device. The maintainer pushes updates to the app itself — your saved recipes stay on your phone.
 
 ## Tech details
 
@@ -43,7 +43,7 @@ Recipes are stored locally on each device. Stefan pushes updates to the app itse
 
 ## Maintained by
 
-Stefan ([@CyberFarFaN](https://github.com/CyberFarFaN))
+[@CyberFarFaN](https://github.com/CyberFarFaN)
 
 ---
 
